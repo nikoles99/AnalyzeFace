@@ -55,7 +55,7 @@ public class HttpConnector {
             responseStrBuilder.append(inputStr);
         }
         return new JSONObject(responseStrBuilder.toString());
-        //
+
     }
 
 }
