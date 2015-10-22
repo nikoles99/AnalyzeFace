@@ -2,6 +2,10 @@ package by.balinasoft.faceanalyzer;
 
 import android.os.AsyncTask;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 public class PhotoAnalyzer extends AsyncTask<Void, Void, Void> {
 
     @Override
@@ -11,7 +15,13 @@ public class PhotoAnalyzer extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        ServerRequest.makeRequest();
+        try {
+            HttpConnector.makeRequest().toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
