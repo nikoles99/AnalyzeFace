@@ -50,4 +50,23 @@ public class ApiConnector {
         }
         return new JSONObject(responseStrBuilder.toString());
     }
+
+    public InputStream makeRequestXml(String xml) throws IOException, JSONException {
+        URL url = new URL(this.url);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setReadTimeout(10000);
+        connection.setConnectTimeout(15000);
+        connection.setRequestMethod("POST");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/xml;charset=utf-8");
+        connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+        connection.connect();
+        OutputStream outputStream = new BufferedOutputStream(connection.getOutputStream());
+        outputStream.write(xml.getBytes());
+        outputStream.flush();
+        return connection.getInputStream();
+    }
+
+
 }

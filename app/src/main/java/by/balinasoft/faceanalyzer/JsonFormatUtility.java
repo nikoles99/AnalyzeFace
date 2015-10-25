@@ -1,9 +1,16 @@
 package by.balinasoft.faceanalyzer;
 
+import android.util.Xml;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +27,6 @@ public class JsonFormatUtility {
     private static final String IMAGE_UID = "img_uid";
 
     public static JSONObject toJson(byte[] photo, String namePhoto) throws JSONException {
-        byte[] bytes = new byte[]{81, 109, 70, 122, 90, 83, 65, 50, 78, 67, 66, 84, 100, 72, 74, 108, 89, 87, 48, 61};
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(API_KEY, API);
         jsonObject.put(API_SECRET, SECRET);
@@ -28,6 +34,17 @@ public class JsonFormatUtility {
         jsonObject.put(IMAGE_FILE_DATA, toJsonArray(photo));
         jsonObject.put(ORIGINAL_FILENAME, namePhoto);
         return jsonObject;
+    }
+
+    public static String toXml(String photo) {
+        return "<ImageRequestBinary xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                "<api_key>" + API + "</api_key>\n" +
+                "<api_secret>" + SECRET + "</api_secret>\n" +
+                "<detection_flags>" + FLAG + "</detection_flags>\n" +
+                "<imagefile_data>\n" + photo + "</imagefile_data>\n" +
+                "<original_filename>sample1.jpg</original_filename>\n" +
+                "</ImageRequestBinary>";
     }
 
     private static JSONArray toJsonArray(byte[] param) {
@@ -66,5 +83,24 @@ public class JsonFormatUtility {
             faces.add(new Face(faceProperties));
         }
         return faces;
+    }
+
+    public static String getImgUid(InputStream xml) throws XmlPullParserException, IOException {
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = factory.newPullParser();
+        xpp.setInput(xml, null);
+
+        while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+            switch (xpp.getEventType()) {
+                case XmlPullParser.START_TAG:
+                    if (xpp.getName().equals("img_uid")) {
+                        return xpp.nextText();
+                    }
+                    break;
+            }
+            xpp.next();
+        }
+        return null;
     }
 }

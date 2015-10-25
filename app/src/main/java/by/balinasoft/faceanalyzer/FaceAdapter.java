@@ -80,9 +80,9 @@ public class FaceAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.raceValue)).setText(face.getFaceProperties().get(5).getValue());
         ((TextView) view.findViewById(R.id.confidenceRace)).setText(face.getFaceProperties().get(5).getConfidence());
 
-        ((TextView) view.findViewById(R.id.smile)).setText(face.getFaceProperties().get(6).getName());
+/*        ((TextView) view.findViewById(R.id.smile)).setText(face.getFaceProperties().get(6).getName());
         ((TextView) view.findViewById(R.id.smileValue)).setText(face.getFaceProperties().get(6).getValue());
-        ((TextView) view.findViewById(R.id.confidenceSmile)).setText(face.getFaceProperties().get(6).getConfidence());
+        ((TextView) view.findViewById(R.id.confidenceSmile)).setText(face.getFaceProperties().get(6).getConfidence());*/
 
 
         return view;

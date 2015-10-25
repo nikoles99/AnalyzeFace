@@ -2,13 +2,16 @@ package by.balinasoft.faceanalyzer;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONObject> {
@@ -31,16 +34,17 @@ public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONObject> {
     protected JSONObject doInBackground(Bitmap... bitmaps) {
         try {
             for (Bitmap bitmap : bitmaps) {
+
                 String base64 = PhotoFormatUtility.bitmatToString(bitmap);
-                byte[] photo =base64.getBytes();
-                JSONObject jsonObject = new ApiConnector("http://www.betafaceapi.com/service_json.svc/UploadNewImage_File").makeRequest(JsonFormatUtility.toJson(photo, "sample1.jpg"));
-                String imgUid = (String) jsonObject.get("img_uid");
-                //imgUid = "ec43984f-0e81-4a85-866f-31f605d1f3be";
+                InputStream inputStream = new ApiConnector("http://www.betafaceapi.com/service.svc/UploadNewImage_File").makeRequestXml(JsonFormatUtility.toXml(base64));
+                String imgUid = JsonFormatUtility.getImgUid(inputStream);
                 return new ApiConnector("http://betafaceapi.com/service_json.svc/GetImageInfo").makeRequest(JsonFormatUtility.prepareJsonImageInfo(imgUid));
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
             e.printStackTrace();
         }
         return null;
@@ -49,6 +53,7 @@ public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
+
         try {
             List<Face> list = JsonFormatUtility.toАppearance(jsonObject);
             faceAdapter.update(list);
