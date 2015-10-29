@@ -57,10 +57,10 @@ public class AnalyzeActivity extends AppCompatActivity {
         });
 
         ListView listView = (ListView) findViewById(R.id.listView);
-        faceAdapter = new FaceAdapter(this, new ArrayList<FaceProperties>());
+        faceAdapter = new FaceAdapter(this, new ArrayList<Face>());
         listView.setAdapter(faceAdapter);
 
-        imageView = (ImageView) findViewById(R.id.imageView2);
+        imageView = (ImageView) findViewById(R.id.photo);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
@@ -105,6 +105,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                     image = getImageFromGallery(data);
                     break;
             }
+            imageView.setImageBitmap(image);
             analyze(image);
         }
     }
@@ -112,7 +113,6 @@ public class AnalyzeActivity extends AppCompatActivity {
     private void analyze(Bitmap image) {
         if (image != null) {
             new PhotoExecutor().execute(image);
-            imageView.setImageBitmap(image);
         } else {
             showMessage(MAKE_PHOTO);
         }
@@ -190,7 +190,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                 showMessage(exception.getMessage());
                 return;
             }
-            List<FaceProperties> list = PhotoFormatUtility.parse(jsonObject);
+            List<Face> list = PhotoFormatUtility.parse(jsonObject);
             faceAdapter.update(list);
             progressBar.setVisibility(View.GONE);
         }

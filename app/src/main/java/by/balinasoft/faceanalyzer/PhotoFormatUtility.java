@@ -86,7 +86,7 @@ public class PhotoFormatUtility {
         }
     }
 
-    public static List<FaceProperties> parse(JSONObject jsonObject) {
+    public static List<Face> parse(JSONObject jsonObject) {
         try {
             List<Face> facesList = new ArrayList<>();
             JSONArray faces = jsonObject.getJSONArray("faces");
@@ -97,7 +97,7 @@ public class PhotoFormatUtility {
                 List<FaceProperties> faceProperties = getFaceProperties(tags);
                 facesList.add(new Face(faceProperties));
             }
-            return facesList.get(0).getFaceProperties();
+            return facesList;
         } catch (JSONException e) {
             throw new IllegalArgumentException(String.format("Invalid JSONObject format %s",
                     jsonObject), e);

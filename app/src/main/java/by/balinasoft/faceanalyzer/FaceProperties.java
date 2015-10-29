@@ -25,4 +25,5 @@ public class FaceProperties {
     public String getName() {
         return name;
     }
+
 }

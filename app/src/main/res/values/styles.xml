@@ -4,11 +4,31 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="StyleNameColumn">
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+    <style name="StyleValueColumn">
+        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+    <style name="StyleConfidenceColumn">
+        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:textColor">@color/material_grey_900</item>
+        <item name="android:layout_gravity">right</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
 
 </resources>
