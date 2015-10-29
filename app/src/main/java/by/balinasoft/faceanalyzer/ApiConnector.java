@@ -14,18 +14,28 @@ import java.net.URL;
 
 public class ApiConnector {
 
+    public static final String TYPE_REQUEST = "POST";
+
+    public static final int TIMEOUT_MILLIS = 10000;
+
     private String url;
 
     public ApiConnector(String url) {
         this.url = url;
     }
 
-    public JSONObject makeRequest(JSONObject requestJson) throws IOException, JSONException {
+    public JSONObject makeJsonRequest(JSONObject requestJson) throws IOException {
         URL url = new URL(this.url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setReadTimeout(10000);
-        connection.setConnectTimeout(15000);
-        connection.setRequestMethod("POST");
+        connection.setReadTimeout(TIMEOUT_MILLIS);
+        connection.setConnectTimeout(TIMEOUT_MILLIS);
+        connection.setRequestMethod(TYPE_REQUEST);
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
@@ -37,7 +47,7 @@ public class ApiConnector {
         return getResponse(connection);
     }
 
-    public JSONObject getResponse(HttpURLConnection connection) throws IOException, JSONException {
+    public JSONObject getResponse(HttpURLConnection connection) throws IOException {
         InputStream inputStream = connection.getInputStream();
         BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(inputStream, "UTF-8"));
@@ -48,15 +58,20 @@ public class ApiConnector {
         while ((inputStr = bufferedReader.readLine()) != null) {
             responseStrBuilder.append(inputStr);
         }
-        return new JSONObject(responseStrBuilder.toString());
+        try {
+            return new JSONObject(responseStrBuilder.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public InputStream makeRequestXml(String xml) throws IOException, JSONException {
+    public InputStream makeXmlRequest(String xml) throws IOException {
         URL url = new URL(this.url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setReadTimeout(10000);
-        connection.setConnectTimeout(15000);
-        connection.setRequestMethod("POST");
+        connection.setReadTimeout(TIMEOUT_MILLIS);
+        connection.setConnectTimeout(TIMEOUT_MILLIS);
+        connection.setRequestMethod(TYPE_REQUEST);
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/xml;charset=utf-8");
@@ -67,6 +82,4 @@ public class ApiConnector {
         outputStream.flush();
         return connection.getInputStream();
     }
-
-
 }

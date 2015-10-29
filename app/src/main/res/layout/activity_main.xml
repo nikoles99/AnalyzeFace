@@ -15,12 +15,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Анализировать" />
+            android:text="Analyze"
+            android:background="#08b491"
+            android:textColor="#ffffff" />
 
         <Button
+            android:layout_marginTop="20dp"
             android:id="@+id/termsOfUse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Условия Использования" />
+            android:text="Terms of use"
+            android:background="#08b491"
+            android:textColor="#ffffff" />
     </LinearLayout>
 </RelativeLayout>

@@ -2,17 +2,19 @@ package by.balinasoft.faceanalyzer;
 
 public class FaceProperties {
 
-    private String confidence;
+    private double confidence;
+
     private String name;
+
     private String value;
 
-    public FaceProperties(String confidence, String name, String value) {
+    public FaceProperties(double confidence, String name, String value) {
         this.confidence = confidence;
         this.name = name;
         this.value = value;
     }
 
-    public String getConfidence() {
+    public double getConfidence() {
         return confidence;
     }
 
