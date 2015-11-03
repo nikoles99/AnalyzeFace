@@ -1,16 +1,30 @@
 package by.balinasoft.faceanalyzer;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Face {
+public class Face implements Serializable {
 
-    private List<FaceProperties> faceProperties;
+    private List<FaceProperties> classifiersProperties;
 
-    public Face(List<FaceProperties> faceProperties) {
-        this.faceProperties = faceProperties;
+    private List<FaceProperties> extendedProperties;
+
+    public Face() {
     }
 
-    public List<FaceProperties> getFaceProperties() {
-        return faceProperties;
+    public List<FaceProperties> getClassifiersProperties() {
+        return classifiersProperties;
+    }
+
+    public List<FaceProperties> getExtendedProperties() {
+        return extendedProperties;
+    }
+
+    public void setClassifiersProperties(List<FaceProperties> classifiersProperties) {
+        this.classifiersProperties = classifiersProperties;
+    }
+
+    public void setExtendedProperties(List<FaceProperties> extendedProperties) {
+        this.extendedProperties = extendedProperties;
     }
 }

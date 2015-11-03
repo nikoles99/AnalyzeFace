@@ -1,6 +1,8 @@
 package by.balinasoft.faceanalyzer;
 
-public class FaceProperties {
+import java.io.Serializable;
+
+public class FaceProperties implements Serializable {
 
     private double confidence;
 

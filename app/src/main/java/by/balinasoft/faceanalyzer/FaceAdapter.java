@@ -15,6 +15,7 @@ public class FaceAdapter extends BaseAdapter {
     public static final int NAME = 0;
     public static final int VALUE = 1;
     public static final int CONFIDENCE = 2;
+
     private List<Face> list;
     private LayoutInflater layoutInflater;
 
@@ -67,7 +68,7 @@ public class FaceAdapter extends BaseAdapter {
         }
 
         Face face = (Face) getItem(position);
-        List<FaceProperties> facePropertiesList = face.getFaceProperties();
+        List<FaceProperties> facePropertiesList = face.getClassifiersProperties();
 
         for (int index = 0; index < facePropertiesList.size(); index++) {
             Double confidence = facePropertiesList.get(index).getConfidence() * 100;

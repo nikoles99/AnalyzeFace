@@ -30,12 +30,6 @@ public class ApiConnector {
         connection.setReadTimeout(TIMEOUT_MILLIS);
         connection.setConnectTimeout(TIMEOUT_MILLIS);
         connection.setRequestMethod(TYPE_REQUEST);
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
@@ -48,22 +42,20 @@ public class ApiConnector {
     }
 
     public JSONObject getResponse(HttpURLConnection connection) throws IOException {
-        InputStream inputStream = connection.getInputStream();
-        BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(inputStream, "UTF-8"));
-
-        String inputStr;
-        StringBuilder responseStrBuilder = new StringBuilder();
-
-        while ((inputStr = bufferedReader.readLine()) != null) {
-            responseStrBuilder.append(inputStr);
-        }
         try {
+            InputStream inputStream = connection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(inputStream, "UTF-8"));
+            String inputStr;
+            StringBuilder responseStrBuilder = new StringBuilder();
+
+            while ((inputStr = bufferedReader.readLine()) != null) {
+                responseStrBuilder.append(inputStr);
+            }
             return new JSONObject(responseStrBuilder.toString());
         } catch (JSONException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Invalid StringBuilder format", e);
         }
-        return null;
     }
 
     public InputStream makeXmlRequest(String xml) throws IOException {

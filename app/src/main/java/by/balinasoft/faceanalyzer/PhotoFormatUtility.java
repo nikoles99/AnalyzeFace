@@ -33,12 +33,26 @@ public class PhotoFormatUtility {
 
     private static final String API = "d45fd466-51e2-4701-8da8-04351c872236";
 
-    private static final String FLAG = "27";
+    private static final String FLAG = "extended";
 
     private static final String IMAGE_UID = "img_uid";
 
+    private static final String TAG_TAGS = "tags";
+
+    private static final String TAG_CONFIDENCE = "confidence";
+
+    private static final String TAG_NAME = "name";
+
+    private static final String TAG_VALUE = "value";
+
+    private static final String TAG_FACES = "faces";
+
+    private static final int CLASSIFIERS = 0;
+    private static final int EXTENDED = 1;
+
     private static final String CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZab" +
             "cdefghijklmnopqrstuvwxyz0123456789+/=";
+
 
     public static JSONObject toJson(byte[] photo) {
         JSONObject jsonObject = new JSONObject();
@@ -54,7 +68,7 @@ public class PhotoFormatUtility {
         }
     }
 
-    public static String toXml(String photo) {
+    public static String toXml(String photo, String FLAG) {
         return "<ImageRequestBinary xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "<api_key>" + API + "</api_key>\n" +
@@ -86,31 +100,48 @@ public class PhotoFormatUtility {
         }
     }
 
-    public static List<Face> parse(JSONObject jsonObject) {
+    public static List<Face> parse(JSONArray jsonArray) {
         try {
-            List<Face> facesList = new ArrayList<>();
-            JSONArray faces = jsonObject.getJSONArray("faces");
+            JSONObject classifiersFaces = jsonArray.getJSONObject(CLASSIFIERS);
+            JSONArray facesClassifiers = classifiersFaces.getJSONArray(TAG_FACES);
 
-            for (int i = 0; i < faces.length(); i++) {
-                JSONObject face = faces.getJSONObject(i);
-                JSONArray tags = face.getJSONArray("tags");
-                List<FaceProperties> faceProperties = getFaceProperties(tags);
-                facesList.add(new Face(faceProperties));
-            }
-            return facesList;
+            JSONObject extendedFaces = jsonArray.getJSONObject(EXTENDED);
+            JSONArray facesExtendedFaces = extendedFaces.getJSONArray(TAG_FACES);
+
+            return getFaces(facesClassifiers, facesExtendedFaces);
         } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format("Invalid JSONObject format %s",
-                    jsonObject), e);
+            throw new IllegalArgumentException(String.format("Invalid JSONArray format %s",
+                    jsonArray), e);
         }
     }
 
-    private static List<FaceProperties> getFaceProperties(JSONArray tags) throws JSONException {
+    private static List<Face> getFaces(JSONArray facesClassifiers, JSONArray facesExtendedFaces)
+            throws JSONException {
+        List<Face> facesList = new ArrayList<>();
+
+        for (int i = 0; i < facesClassifiers.length(); i++) {
+            Face face = new Face();
+
+            List<FaceProperties> classifiersProperties = getFaceProperties(
+                    facesClassifiers.getJSONObject(i));
+            face.setClassifiersProperties(classifiersProperties);
+
+            List<FaceProperties> extendedProperties = getFaceProperties(
+                    facesExtendedFaces.getJSONObject(i));
+            face.setExtendedProperties(extendedProperties);
+            facesList.add(face);
+        }
+        return facesList;
+    }
+
+    private static List<FaceProperties> getFaceProperties(JSONObject face) throws JSONException {
+        JSONArray tags = face.getJSONArray(TAG_TAGS);
         List<FaceProperties> faceProperties = new ArrayList<>();
 
         for (int j = 0; j < tags.length(); j++) {
-            String confidence = tags.getJSONObject(j).getString("confidence");
-            String name = tags.getJSONObject(j).getString("name");
-            String value = tags.getJSONObject(j).getString("value");
+            String confidence = tags.getJSONObject(j).getString(TAG_CONFIDENCE);
+            String name = tags.getJSONObject(j).getString(TAG_NAME);
+            String value = tags.getJSONObject(j).getString(TAG_VALUE);
             faceProperties.add(new FaceProperties(Double.parseDouble(confidence), name, value));
         }
         return faceProperties;

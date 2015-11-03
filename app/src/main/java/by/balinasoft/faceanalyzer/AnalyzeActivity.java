@@ -16,12 +16,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v7.widget.Toolbar;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class AnalyzeActivity extends AppCompatActivity {
@@ -29,15 +31,17 @@ public class AnalyzeActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAMERA = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
 
-    public static final String TYPE = "image/*";
-    public static final String MAKE_PHOTO = "Please select image or make photo on camera";
-    public static final String INVALID_IMAGE = "Invalid Image";
+    private static final String TYPE = "image/*";
+    private static final String MAKE_PHOTO = "Please select image or make photo on camera";
+    private static final String INVALID_IMAGE = "Invalid Image";
+    public static final String DATA = "data";
 
     private FaceAdapter faceAdapter;
 
     private ProgressBar progressBar;
 
     private ImageView imageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,15 @@ public class AnalyzeActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listView);
         faceAdapter = new FaceAdapter(this, new ArrayList<Face>());
         listView.setAdapter(faceAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(AnalyzeActivity.this, MoreInfoActivity.class);
+                Face face = (Face) faceAdapter.getItem(position);
+                intent.putExtra(MoreInfoActivity.FACE, face);
+                startActivity(intent);
+            }
+        });
 
         imageView = (ImageView) findViewById(R.id.photo);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -71,7 +84,8 @@ public class AnalyzeActivity extends AppCompatActivity {
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType(TYPE);
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
@@ -133,7 +147,7 @@ public class AnalyzeActivity extends AppCompatActivity {
     private Bitmap getImageFromCamera(Intent data) {
         Bitmap imageBitmap;
         Bundle extras = data.getExtras();
-        imageBitmap = (Bitmap) extras.get("data");
+        imageBitmap = (Bitmap) extras.get(DATA);
         return imageBitmap;
     }
 
@@ -142,7 +156,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                 message, Toast.LENGTH_SHORT).show();
     }
 
-    public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONObject> {
+    public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONArray> {
 
         private static final String URL_REQUEST_UID = "http://www.betafaceapi.com/service.svc/" +
                 "UploadNewImage_File";
@@ -158,11 +172,19 @@ public class AnalyzeActivity extends AppCompatActivity {
         }
 
         @Override
-        protected JSONObject doInBackground(Bitmap... bitmaps) {
+        protected JSONArray doInBackground(Bitmap... bitmaps) {
             try {
                 for (Bitmap bitmap : bitmaps) {
-                    String imgUid = getPhotoUid(bitmap);
-                    return getPhotoInfo(imgUid);
+                    String imgUidClassifiers = getPhotoUid(bitmap, "");
+                    final JSONObject classifiersFace = getPhotoInfo(imgUidClassifiers);
+
+                    String imgUidExtended = getPhotoUid(bitmap, "extended");
+                    final JSONObject extendedFace = getPhotoInfo(imgUidExtended);
+
+                    return new JSONArray() {{
+                        put(classifiersFace);
+                        put(extendedFace);
+                    }};
                 }
             } catch (IOException e) {
                 exception = e;
@@ -175,22 +197,23 @@ public class AnalyzeActivity extends AppCompatActivity {
             return new ApiConnector(URL_REQUEST_IMG_INFO).makeJsonRequest(jsonObject);
         }
 
-        private String getPhotoUid(Bitmap bitmap) throws IOException {
+        private String getPhotoUid(Bitmap bitmap, String flag) throws IOException {
             String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
-            String xmlRequest = PhotoFormatUtility.toXml(base64Photo);
+            String xmlRequest = PhotoFormatUtility.toXml(base64Photo, flag);
             InputStream response = new ApiConnector(URL_REQUEST_UID).makeXmlRequest(xmlRequest);
             return PhotoFormatUtility.parse(response);
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            super.onPostExecute(jsonObject);
+        protected void onPostExecute(JSONArray jsonArray) {
+            super.onPostExecute(jsonArray);
 
-            if (exception != null || jsonObject == null) {
+            if (exception != null || jsonArray == null) {
                 showMessage(exception.getMessage());
                 return;
             }
-            List<Face> list = PhotoFormatUtility.parse(jsonObject);
+
+            List<Face> list = PhotoFormatUtility.parse(jsonArray);
             faceAdapter.update(list);
             progressBar.setVisibility(View.GONE);
         }
