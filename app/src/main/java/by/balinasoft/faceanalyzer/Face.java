@@ -5,26 +5,17 @@ import java.util.List;
 
 public class Face implements Serializable {
 
-    private List<FaceProperties> classifiersProperties;
-
-    private List<FaceProperties> extendedProperties;
+    private List<FaceProperties> faceProperties;
 
     public Face() {
     }
 
-    public List<FaceProperties> getClassifiersProperties() {
-        return classifiersProperties;
+    public List<FaceProperties> getFaceProperties() {
+        return faceProperties;
     }
 
-    public List<FaceProperties> getExtendedProperties() {
-        return extendedProperties;
+    public void setFaceProperties(List<FaceProperties> faceProperties) {
+        this.faceProperties = faceProperties;
     }
 
-    public void setClassifiersProperties(List<FaceProperties> classifiersProperties) {
-        this.classifiersProperties = classifiersProperties;
-    }
-
-    public void setExtendedProperties(List<FaceProperties> extendedProperties) {
-        this.extendedProperties = extendedProperties;
-    }
 }

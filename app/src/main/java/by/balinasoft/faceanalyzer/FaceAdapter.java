@@ -1,14 +1,13 @@
 package by.balinasoft.faceanalyzer;
 
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import java.util.List;
-
 
 public class FaceAdapter extends BaseAdapter {
 
@@ -17,6 +16,7 @@ public class FaceAdapter extends BaseAdapter {
     public static final int CONFIDENCE = 2;
 
     private List<Face> list;
+
     private LayoutInflater layoutInflater;
 
     private static final int[][] VIEWS_ID = new int[][]{
@@ -68,7 +68,7 @@ public class FaceAdapter extends BaseAdapter {
         }
 
         Face face = (Face) getItem(position);
-        List<FaceProperties> facePropertiesList = face.getClassifiersProperties();
+        List<FaceProperties> facePropertiesList = face.getFaceProperties();
 
         for (int index = 0; index < facePropertiesList.size(); index++) {
             Double confidence = facePropertiesList.get(index).getConfidence() * 100;
@@ -80,7 +80,6 @@ public class FaceAdapter extends BaseAdapter {
             ((TextView) view.findViewById(VIEWS_ID[index][CONFIDENCE]))
                     .setText(confidence.intValue() + "% ");
         }
-
         return view;
     }
 }

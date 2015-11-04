@@ -30,6 +30,11 @@ public class ApiConnector {
         connection.setReadTimeout(TIMEOUT_MILLIS);
         connection.setConnectTimeout(TIMEOUT_MILLIS);
         connection.setRequestMethod(TYPE_REQUEST);
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");

@@ -51,26 +51,13 @@ public class PhotoFormatUtility {
 
     private static final String OK = "ok";
 
-    private static final String CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZab" +
-            "cdefghijklmnopqrstuvwxyz0123456789+/=";
+    private static final String CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" +
+            "0123456789+/=";
 
     private static final int CLASSIFIERS = 0;
+
     private static final int EXTENDED = 1;
 
-
-    public static JSONObject toJson(byte[] photo) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(API_SECRET, SECRET);
-            jsonObject.put(DETECTION_FLAGS, FLAG);
-            jsonObject.put(IMAGE_FILE_DATA, toJsonArray(photo));
-            jsonObject.put(ORIGINAL_FILENAME, ORIGINAL_FILENAME);
-            jsonObject.put(API_KEY, API);
-            return jsonObject;
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format("Invalid byte[] format %s", photo), e);
-        }
-    }
 
     public static String toXml(String photo, String FLAG) {
         return "<ImageRequestBinary xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
@@ -83,11 +70,25 @@ public class PhotoFormatUtility {
                 "</ImageRequestBinary>";
     }
 
-    private static JSONArray toJsonArray(byte[] param) {
+    public static JSONObject toJson(byte[] photo) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(API_SECRET, SECRET);
+            jsonObject.put(DETECTION_FLAGS, FLAG);
+            jsonObject.put(IMAGE_FILE_DATA, toJsonArray(photo));
+            jsonObject.put(ORIGINAL_FILENAME, ORIGINAL_FILENAME);
+            jsonObject.put(API_KEY, API);
+            return jsonObject;
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(String.format("Invalid byte[] format %s", photo), e);
+        }
+    }
+
+    private static JSONArray toJsonArray(byte[] params) {
         JSONArray jsonArray = new JSONArray();
 
-        for (int i = 0; i < param.length; i++) {
-            jsonArray.put((int) param[i]);
+        for (byte param : params) {
+            jsonArray.put((int) param);
         }
         return jsonArray;
     }
@@ -100,39 +101,31 @@ public class PhotoFormatUtility {
             jsonObject.put(IMAGE_UID, imageUid);
             return jsonObject;
         } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format("Invalid String format %s", imageUid), e);
+            throw new IllegalArgumentException(String.format("Invalid String format %s",
+                    imageUid), e);
         }
     }
 
-    public static List<Face> parse(JSONArray jsonArray) {
+    public static List<Face> parse(JSONObject jsonObject) {
         try {
-            JSONObject classifiersFaces = jsonArray.getJSONObject(CLASSIFIERS);
-            JSONArray facesClassifiers = classifiersFaces.getJSONArray(TAG_FACES);
-
-            JSONObject extendedFaces = jsonArray.getJSONObject(EXTENDED);
-            JSONArray facesExtendedFaces = extendedFaces.getJSONArray(TAG_FACES);
-
-            return getFaces(facesClassifiers, facesExtendedFaces);
+            JSONArray faceProperties = jsonObject.getJSONArray(TAG_FACES);
+            return getFace(faceProperties);
         } catch (JSONException e) {
             throw new IllegalArgumentException(String.format("Invalid JSONArray format %s",
-                    jsonArray), e);
+                    jsonObject), e);
         }
     }
 
-    private static List<Face> getFaces(JSONArray facesClassifiers, JSONArray facesExtendedFaces)
-            throws JSONException {
+    private static List<Face> getFace(JSONArray jsonProperties) throws JSONException {
         List<Face> facesList = new ArrayList<>();
 
-        for (int i = 0; i < facesClassifiers.length(); i++) {
+        for (int i = 0; i < jsonProperties.length(); i++) {
             Face face = new Face();
 
-            List<FaceProperties> classifiersProperties = getFaceProperties(
-                    facesClassifiers.getJSONObject(i));
-            face.setClassifiersProperties(classifiersProperties);
+            List<FaceProperties> faceProperties = getFaceProperties(jsonProperties.
+                    getJSONObject(i));
+            face.setFaceProperties(faceProperties);
 
-            List<FaceProperties> extendedProperties = getFaceProperties(
-                    facesExtendedFaces.getJSONObject(i));
-            face.setExtendedProperties(extendedProperties);
             facesList.add(face);
         }
         return facesList;
@@ -159,13 +152,13 @@ public class PhotoFormatUtility {
             xpp.setInput(xml, null);
             return getImgUid(xpp);
         } catch (XmlPullParserException e) {
-            throw new IllegalArgumentException(String.format("Invalid InputStream format %s", xml), e);
+            throw new IllegalArgumentException(String.format("Invalid InputStream format %s",
+                    xml), e);
         }
     }
 
     private static String getImgUid(XmlPullParser xpp) throws XmlPullParserException, IOException {
         while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-
             switch (xpp.getEventType()) {
                 case XmlPullParser.START_TAG:
                     if (xpp.getName().equals(IMAGE_UID)) {
@@ -208,12 +201,10 @@ public class PhotoFormatUtility {
     }
 
     public static String bitmapToString(Bitmap image) {
-        Bitmap immagex = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immagex.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-        return imageEncoded;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] b = stream.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public static Bitmap stringToBitmap(String input) {
