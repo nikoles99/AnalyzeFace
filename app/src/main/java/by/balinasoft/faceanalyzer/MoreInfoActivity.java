@@ -26,7 +26,8 @@ public class MoreInfoActivity extends AppCompatActivity {
         for (FaceProperties faceProperties : face.getExtendedProperties()) {
             double confidence = faceProperties.getConfidence();
             confidence *= 100;
-            stringBuilder.append(faceProperties.getName() + " " + faceProperties.getValue() + " " + confidence + "% \n");
+            stringBuilder.append(faceProperties.getName() + "     " + faceProperties.getValue() +
+                    "     " + confidence + "% \n");
         }
         textView.setText(stringBuilder);
     }

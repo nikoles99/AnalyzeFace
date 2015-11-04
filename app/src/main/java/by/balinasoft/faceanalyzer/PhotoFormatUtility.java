@@ -47,11 +47,15 @@ public class PhotoFormatUtility {
 
     private static final String TAG_FACES = "faces";
 
-    private static final int CLASSIFIERS = 0;
-    private static final int EXTENDED = 1;
+    private static final String STRING_RESPONSE = "string_response";
+
+    private static final String OK = "ok";
 
     private static final String CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZab" +
             "cdefghijklmnopqrstuvwxyz0123456789+/=";
+
+    private static final int CLASSIFIERS = 0;
+    private static final int EXTENDED = 1;
 
 
     public static JSONObject toJson(byte[] photo) {
@@ -215,5 +219,19 @@ public class PhotoFormatUtility {
     public static Bitmap stringToBitmap(String input) {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+    public static boolean checkJson(JSONObject jsonObject) throws IOException {
+        try {
+            String message = jsonObject.getString(STRING_RESPONSE);
+            if (message.equals(OK)) {
+                return true;
+            } else {
+                throw new IOException(message + ", please try again");
+            }
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(String.format("Invalid " +
+                    "JSONObject format %s", jsonObject), e);
+        }
     }
 }

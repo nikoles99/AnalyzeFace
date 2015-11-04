@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,7 +81,6 @@ public class AnalyzeActivity extends AppCompatActivity {
     private void openCamera(View view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_IMAGE_CAMERA);
-        // Snackbar.make(view, "Open camera", Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     private void openGallery() {
@@ -152,8 +152,9 @@ public class AnalyzeActivity extends AppCompatActivity {
     }
 
     private void showMessage(String message) {
-        Toast.makeText(progressBar.getContext().getApplicationContext(),
-                message, Toast.LENGTH_SHORT).show();
+        Snackbar.make(imageView, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        /*Toast.makeText(progressBar.getContext().getApplicationContext(),
+                message, Toast.LENGTH_SHORT).show();*/
     }
 
     public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONArray> {
@@ -177,9 +178,11 @@ public class AnalyzeActivity extends AppCompatActivity {
                 for (Bitmap bitmap : bitmaps) {
                     String imgUidClassifiers = getPhotoUid(bitmap, "");
                     final JSONObject classifiersFace = getPhotoInfo(imgUidClassifiers);
+                    PhotoFormatUtility.checkJson(classifiersFace);
 
                     String imgUidExtended = getPhotoUid(bitmap, "extended");
                     final JSONObject extendedFace = getPhotoInfo(imgUidExtended);
+                    PhotoFormatUtility.checkJson(extendedFace);
 
                     return new JSONArray() {{
                         put(classifiersFace);
@@ -208,13 +211,16 @@ public class AnalyzeActivity extends AppCompatActivity {
         protected void onPostExecute(JSONArray jsonArray) {
             super.onPostExecute(jsonArray);
 
-            if (exception != null || jsonArray == null) {
-                showMessage(exception.getMessage());
-                return;
-            }
+            if (exception == null) {
+                List<Face> list = PhotoFormatUtility.parse(jsonArray);
+                faceAdapter.update(list);
 
-            List<Face> list = PhotoFormatUtility.parse(jsonArray);
-            faceAdapter.update(list);
+                if (list.isEmpty()) {
+                    showMessage("Photo doesn't contain faces");
+                }
+            } else {
+                showMessage(exception.getMessage());
+            }
             progressBar.setVisibility(View.GONE);
         }
     }

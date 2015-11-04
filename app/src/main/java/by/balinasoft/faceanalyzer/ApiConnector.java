@@ -16,7 +16,7 @@ public class ApiConnector {
 
     public static final String TYPE_REQUEST = "POST";
 
-    public static final int TIMEOUT_MILLIS = 10000;
+    public static final int TIMEOUT_MILLIS = 100000;
 
     private String url;
 
@@ -33,12 +33,16 @@ public class ApiConnector {
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
-        connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
         connection.connect();
         OutputStream outputStream = new BufferedOutputStream(connection.getOutputStream());
         outputStream.write(requestJson.toString().getBytes());
         outputStream.flush();
-        return getResponse(connection);
+
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            return getResponse(connection);
+        } else {
+            throw new IOException("Error code: " + connection.getResponseCode());
+        }
     }
 
     public JSONObject getResponse(HttpURLConnection connection) throws IOException {
@@ -72,6 +76,11 @@ public class ApiConnector {
         OutputStream outputStream = new BufferedOutputStream(connection.getOutputStream());
         outputStream.write(xml.getBytes());
         outputStream.flush();
-        return connection.getInputStream();
+
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            return connection.getInputStream();
+        } else {
+            throw new IOException("Error code: " + connection.getResponseCode());
+        }
     }
 }
