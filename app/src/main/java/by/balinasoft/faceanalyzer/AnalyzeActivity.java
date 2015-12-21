@@ -2,7 +2,6 @@ package by.balinasoft.faceanalyzer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
@@ -11,16 +10,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.support.v7.widget.Toolbar;
 import android.widget.ProgressBar;
 
 import org.json.JSONObject;
@@ -39,7 +33,7 @@ public class AnalyzeActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
-    private ImageView imageView;
+    private ImageView openGallery;
 
     private Bitmap image;
 
@@ -50,19 +44,24 @@ public class AnalyzeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton floatingActionButton = (FloatingActionButton)
-                findViewById(R.id.floatingActionButton);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        ImageView makePhoto = (ImageView)
+                findViewById(R.id.makePhoto);
+        makePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openCamera();
             }
         });
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+        openGallery = (ImageView) findViewById(R.id.loadFromGallery);
+        openGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
+            }
+        });
+
+      /*  ListView listView = (ListView) findViewById(R.id.listView);
         faceAdapter = new FaceAdapter(this, new ArrayList<Face>());
         listView.setAdapter(faceAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,10 +70,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                 facePosition = position;
                 analyze(image, "extended");
             }
-        });
-
-        imageView = (ImageView) findViewById(R.id.photo);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        });*/
     }
 
     private void openCamera() {
@@ -89,21 +85,6 @@ public class AnalyzeActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.galery:
-                openGallery();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -116,7 +97,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                     image = getImageFromGallery(data);
                     break;
             }
-            imageView.setImageBitmap(image);
+            openGallery.setImageBitmap(image);
             analyze(image, "");
         }
     }
@@ -145,7 +126,7 @@ public class AnalyzeActivity extends AppCompatActivity {
     }
 
     private void showMessage(String message) {
-        Snackbar.make(imageView, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Snackbar.make(openGallery, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONObject> {

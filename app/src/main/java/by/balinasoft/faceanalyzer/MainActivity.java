@@ -1,16 +1,16 @@
 package by.balinasoft.faceanalyzer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     private boolean isEvaluate = false;
 
@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button analyze = (Button) findViewById(R.id.analyze);
+        ImageView analyze = (ImageView) findViewById(R.id.analyzeButton);
         analyze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button termsOfUse = (Button) findViewById(R.id.termsOfUse);
+        ImageView termsOfUse = (ImageView) findViewById(R.id.termsOfUse);
         termsOfUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
