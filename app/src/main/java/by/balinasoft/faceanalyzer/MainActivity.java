@@ -35,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ImageView statistic = (ImageView) findViewById(R.id.statistic);
+        statistic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, StatisticActivity.class));
+            }
+        });
+
     }
 
     @Override
