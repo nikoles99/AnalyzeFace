@@ -6,6 +6,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import by.balinasoft.faceanalyzer.model.Face;
+import by.balinasoft.faceanalyzer.model.FaceProperties;
+
 public class MoreInfoActivity extends AppCompatActivity {
 
     public static final String Face = AppCompatActivity.class + "Face";
@@ -19,7 +22,7 @@ public class MoreInfoActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textView);
 
-        Face face = (Face)getIntent().getSerializableExtra(Face);
+        by.balinasoft.faceanalyzer.model.Face face = (Face)getIntent().getSerializableExtra(Face);
         print(face.getFaceProperties());
     }
 

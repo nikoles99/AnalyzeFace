@@ -1,8 +1,10 @@
-package by.balinasoft.faceanalyzer;
+package by.balinasoft.faceanalyzer.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import by.balinasoft.faceanalyzer.model.FaceProperties;
+import by.balinasoft.faceanalyzer.model.Face;
 
 public class PhotoFormatUtility {
 
@@ -93,17 +98,12 @@ public class PhotoFormatUtility {
         return jsonArray;
     }
 
-    public static JSONObject prepareJsonImageInfo(String imageUid) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(API_KEY, API);
-            jsonObject.put(API_SECRET, SECRET);
-            jsonObject.put(IMAGE_UID, imageUid);
+    public static JsonObject prepareJsonImageInfo(String imageUid) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty(API_KEY, API);
+            jsonObject.addProperty(API_SECRET, SECRET);
+            jsonObject.addProperty(IMAGE_UID, imageUid);
             return jsonObject;
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format("Invalid String format %s",
-                    imageUid), e);
-        }
     }
 
     public static List<Face> parse(JSONObject jsonObject) {

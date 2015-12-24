@@ -5,6 +5,7 @@
                 tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/logotype"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -26,7 +27,9 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/analyzeLayout"
         android:layout_width="wrap_content"
+        android:layout_below="@+id/logotype"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:orientation="vertical">

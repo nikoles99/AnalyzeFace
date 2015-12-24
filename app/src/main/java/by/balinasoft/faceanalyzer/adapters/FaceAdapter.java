@@ -1,4 +1,4 @@
-package by.balinasoft.faceanalyzer;
+package by.balinasoft.faceanalyzer.adapters;
 
 import java.util.List;
 
@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import by.balinasoft.faceanalyzer.model.Face;
+import by.balinasoft.faceanalyzer.model.FaceProperties;
+import by.balinasoft.faceanalyzer.R;
 
 public class FaceAdapter extends BaseAdapter {
 

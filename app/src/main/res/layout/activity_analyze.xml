@@ -5,11 +5,11 @@
                 android:orientation="vertical">
 
     <LinearLayout
-        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
         android:orientation="vertical">
 
         <TextView
@@ -29,9 +29,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_centerInParent="true">
+        android:layout_marginRight="40dp">
 
         <ImageView
             android:id="@+id/loadFromGallery"
@@ -46,5 +46,19 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:background="@drawable/photo"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.6"
+        android:background="@color/material_grey_600">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="false"
+            android:visibility="visible"/>
     </RelativeLayout>
 </RelativeLayout>
