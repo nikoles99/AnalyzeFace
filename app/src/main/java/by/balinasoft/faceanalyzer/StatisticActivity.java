@@ -15,7 +15,7 @@ public class StatisticActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
-        JsonObject language = FaceAnalyzerApplication.getAppLanguage();
+        JsonObject language = ((FaceAnalyzerApplication)getApplicationContext()).getAppLanguage();
 
         String title = language.get(Constants.STATS).getAsString();
         getSupportActionBar().setTitle(title);

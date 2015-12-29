@@ -15,10 +15,10 @@ public class FaceAnalyzerApplication extends Application {
     private static final String ENGLISH = "EN";
     private static final String RUSSIAN = "RU";
 
-    private static String mappingTableFile;
     private static String eula;
 
     private static JsonObject appLanguage;
+    private static JsonObject mappingTable;
 
     @Override
     public void onCreate() {
@@ -28,7 +28,8 @@ public class FaceAnalyzerApplication extends Application {
 
     private void setApplicationLanguage() {
         String deviceLanguage = Locale.getDefault().getDisplayLanguage();
-        JsonObject jsonObject =  FileReader.
+        String mappingTableFile;
+        JsonObject jsonObject = FileReader.
                 loadJsonFile(getApplicationContext(), WORDS_TRANSLATION_FILE);
 
         switch (deviceLanguage) {
@@ -43,18 +44,19 @@ public class FaceAnalyzerApplication extends Application {
                 mappingTableFile = Constants.ENGLISH_MAPPING_TABLE;
                 break;
         }
+        mappingTable = FileReader.loadJsonFile(getApplicationContext(), mappingTableFile);
     }
 
 
-    public static JsonObject getAppLanguage() {
+    public JsonObject getAppLanguage() {
         return appLanguage;
     }
 
-    public static String getMappingTableFile() {
-        return mappingTableFile;
+    public JsonObject getMappingTable() {
+        return mappingTable;
     }
 
-    public static String getEula() {
+    public String getEula() {
         return eula;
     }
 }

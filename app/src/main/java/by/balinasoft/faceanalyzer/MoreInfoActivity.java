@@ -23,7 +23,7 @@ public class MoreInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_info);
 
-        JsonObject language = FaceAnalyzerApplication.getAppLanguage();
+        JsonObject language = ((FaceAnalyzerApplication)getApplicationContext()).getAppLanguage();
 
         textView = (TextView) findViewById(R.id.textView);
 

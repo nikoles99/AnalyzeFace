@@ -71,4 +71,5 @@ public class Constants {
     public static final String SOCIAL_RELATIONS = "SocialRelations";
     public static final String CHARACTER = "Character";
     public static final String RESULT = "Result";
+    public static final String RESPONSE = "string_response";
 }

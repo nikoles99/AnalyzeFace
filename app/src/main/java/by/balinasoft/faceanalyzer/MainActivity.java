@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        JsonObject language = FaceAnalyzerApplication.getAppLanguage();
+        JsonObject language = ((FaceAnalyzerApplication)getApplicationContext()).getAppLanguage();
 
         String title = language.get(Constants.ANALYSIS).getAsString();
         getSupportActionBar().setTitle(title);

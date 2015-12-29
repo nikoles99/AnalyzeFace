@@ -1,6 +1,8 @@
 package by.balinasoft.faceanalyzer.model;
 
-public class HumanQuality {
+import java.io.Serializable;
+
+public class HumanQuality implements Serializable{
 
     private String type;
 
