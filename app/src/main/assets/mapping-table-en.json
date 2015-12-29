@@ -1,0 +1,483 @@
+{
+	"comment" : ["X - character", "O - relationships with other people", "R - work", "L - love"],
+	"chin size" : {
+		"extra large" : {
+			"X" : ["strong", "decisive", "assertive"],
+			"O" : [],
+			"R":  ["well with crises", "authoritarian"],
+			"L":  []
+		},
+		"large" : {
+			"X" : ["confident in their abilities", "prefer to prepare in advance"],
+			"O": [],
+			"R": ["well organized and logical", "ambitious"],
+			"L": []
+		}, 
+		"average" : {
+			"X" : ["good common sense",  "levelheaded"],
+			"O": [],
+			"R": ["ambitious"],
+			"L": []
+		},
+		"small" : {
+			"X" : [],
+			"O": ["delicate", "make friends easily"],
+			"R": ["not ambitious"],
+			"L": []
+		},
+		"extra small" : {
+			"X" : [],
+			"O": ["delicate"],
+			"R": ["not obstinant", "compromise seeker"],
+			"L": []
+		}
+	 }, 
+	"head shape" : {
+		"extra heart" : {
+			"X": ["intellectuals", "love to learn", "may think about the issues and their experiences"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"heart" : {
+			"X": ["strong", "reliable", "like physical activity"],
+			"O": [],
+			"R": ["good self-discipline and flexibility"],
+			"L": []
+		},
+		"average" : {
+			"X": ["good creative abilities", "imagination", "artistic"],
+			"O": ["can take criticism to closely"],
+			"R": ["adaptable", "flexible"],
+			"L": []
+		},
+		"rect" : {
+			"X": ["balanced approach", "good common sense"],
+			"O": [],
+			"R": ["prefer the stability and permanence"],
+			"L": []
+		},	
+		"extra_rect" : {
+			"X": ["practical", "logical", "good common sense", "reliable"],
+			"O": [],
+			"R": ["bring things to the finish", "organized", "don't take changes easily", "hardly agree with other point of view"],
+			"L": []
+		}
+	},
+	"head width" : {
+		"extra narrow" : {
+			"X": ["focused on the present", "clever"],
+			"O": [],
+			"R": ["good memory for facts and numbers", "quick thinking"],
+			"L": []
+		},
+		"narrow" : {
+			"X": [],
+			"O": ["sociable", "love to interact with people"],
+			"R": ["work well in the team", "quick thinking"],
+			"L": []
+		},
+		"average" : {
+			"X": [],
+			"O": [],
+			"R": ["good self-discipline and flexibility", "well organized and logical", "are systematic", "take responsibility with confidence"],
+			"L": []
+		},
+		"wide" : {
+			"X": ["independent", "good creative abilities", "imagination"],
+			"O": [],
+			"R": ["work alone easily", "easily generate your own ideas"],
+			"L": []
+		},	
+		"extra wide" : {
+			"X": ["have developed, academically active mind", "love to dream and to conduct imaginary conversations", "think about the future a lot"],
+			"O": [],
+			"R": [],
+			"L": []
+		}
+	},
+	"nose shape" : {
+		"extra straight" : {
+			"X": ["strong", "clever", "stubborn"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"straight" : {
+			"X": ["generous", "like comfort and to get max pleasure from life"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": ["strong", "energetic", "viable"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"triangle" : {
+			"X": ["good creative abilities"],
+			"O": [],
+			"R": [],
+			"L": []
+		},	
+		"extra triangle" : {
+			"X": ["generous", "sensitive"],
+			"O": [],
+			"R": [],
+			"L": []
+		}
+	},
+	"nose width" : {
+		"extra wide" : {
+			"X": [],
+			"O": [],
+			"R": ["can deal with many things at the same time"],
+			"L": []
+		},
+		"wide" : {
+			"X": ["courageous"],
+			"O": [],
+			"R": ["have a clear thinking", "ambitious"],
+			"L": []
+		},
+		"average" : {
+			"X": ["curious"],
+			"O": ["love to interact with people", "sociable"],
+			"R": ["work well in the team", "may be indecisive in action"],
+			"L": []
+		},
+		"narrow" : {
+			"X": [],
+			"O": [],
+			"R": ["tend to think on one problem at a time"],
+			"L": []
+		},	
+		"extra narrow" : {
+			"X": ["thrifty", "shy", "prefer to maintain controll in all situations", "do not like pranks"],
+			"O": [],
+			"R": [],
+			"L": []
+		}
+	}	,
+	"mouth corners" : {
+		"extra low" : {
+			"X": ["pessimistic"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"low" : {
+			"X": ["pessimistic"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": ["realistic"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"raised" : {
+			"X": ["optimistic"],
+			"O": [],
+			"R": [],
+			"L": []
+		},	
+		"extra raised" : {
+			"X": ["optimistic"],
+			"O": [],
+			"R": [],
+			"L": []
+		}
+	},
+	"mouth height" : {
+		"extra thick" : {
+			"X": ["responsible"],
+			"O": [],
+			"R": ["hard-working", "may be a workaholics"],
+			"L": []
+		},
+		"thick" : {
+			"X": ["serious"],
+			"O": [],
+			"R": ["may be prone to stress"],
+			"L": []
+		},
+		"average" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"thin" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},	
+		"extra thin" : {
+			"X": ["easy-going", "know how to relax"],
+			"O": [],
+			"R": ["can be lazy if not motivated"],
+			"L": []
+		}
+	},
+	"mouth width" : {
+		"extra wide" : {
+			"X": ["generous", "curious", "eager to try everything in life"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"wide" : {
+			"X": ["do not like to live in routine, orderly life"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": ["emotional", "prone to gambling"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"small" : {
+			"X": ["independent", "critical"],
+			"O": [],
+			"R": ["tireless workers", "may be overly critical"],
+			"L": []
+		},	
+		"extra small" : {
+			"X": ["thrifty", "strong-willed"],
+			"O": [],
+			"R": ["usually introverts"],
+			"L": []
+		}
+	},	
+	"eyebrows corners" : {
+		"extra low" : {
+			"X": ["soft", "thoughtful"],
+			"O": ["sociable", "love to interact with people"],
+			"R": ["work well in the team"],
+			"L": []
+		},
+		"low" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": ["resistant"],
+			"O": [],
+			"R": ["can put specific objectives that will persevere"],
+			"L": []
+		},
+		"raised" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},	
+		"extra raised" : {
+			"X": ["ambitious", "dynamic", "impatient", "irritable"],
+			"O": [],
+			"R": [],
+			"L": []
+		}
+	},
+	"eyebrows position" : {
+		"extra low" : {
+			"X": ["focused", "positive approach to life"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"low" : {
+			"X": ["decisive", "spontaneous"],
+			"O": [],
+			"R": ["do not afraid to take challenges"],
+			"L": []
+		},
+		"average" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"high" : {
+			"X": ["hesitant"],
+			"O": [],
+			"R": ["prone to fluctuations, which could hinder a decision"],
+			"L": []
+		},	
+		"extra high" : {
+			"X": ["patient", "sensitive"],
+			"O": [],
+			"R": [],
+			"L": []
+		}
+	}, 
+	"eyebrows size" : {
+		"extra thick" : {
+			"X": ["adaptable"],
+			"O": [],
+			"R": ["may be prone to stress"],
+			"L": []
+		},
+		"thick" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": ["if in harmony, they can live a varied life full of adventures; if not, they may be too active or relaxed, aggressive or serene"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"thin" : {
+			"X": ["strong", "hardy", "resistant"],
+			"O": [],
+			"R": ["do not give up"],
+			"L": []
+		},	
+		"extra thin" : {
+			"X": ["strong", "resistant"],
+			"O": [],
+			"R": ["imperious persons"],
+			"L": []
+		}
+	},
+	"eyes corners" : {
+		"extra low" : {
+			"X": ["calm", "passive"],
+			"O": ["good listeners"],
+			"R": [],
+			"L": []
+		},
+		"low" : {
+			"X": ["reticent"],
+			"O": ["may hide wounds, cling to past events"],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": ["responsible", "hardworking"],
+			"O": [],
+			"R": ["good attitude to their duties", "not inclined to shirk from work"],
+			"L": []
+		},
+		"raised" : {
+			"X": ["inquisitive", "curious", "enthusiastic"],
+			"O": [],
+			"R": ["love to explore new things, but can be easily distracted"],
+			"L": []
+		},	
+		"extra raised" : {
+			"X": ["intelligent", "savvy"],
+			"O": [],
+			"R": ["ready to go to great sacrifices to achieve their goal"],
+			"L": []
+		}
+	},
+	"eyes distance" : {
+		"extra far" : {
+			"X": ["flexible", "open-minded", "have free thinking", "enjoy the open discussions"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"far" : {
+			"X": ["gullible", "naive", "have a wide range of interests"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": ["sincere", "fair", "hardworking"],
+			"O": [],
+			"R": ["good performers: do not shift to others own tasks, do not complain"],
+			"L": []
+		},
+		"close" : {
+			"X": ["decisive", "straight"],
+			"O": [],
+			"R": ["well organized and logical"],
+			"L": []
+		},	
+		"extra close" : {
+			"X": ["accurate", "careful"],
+			"O": [],
+			"R": ["great ability to concentrate"],
+			"L": []
+		}
+	},
+	"eyes position" : {
+		"extra low" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"low" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"average" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"high" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		},	
+		"extra high" : {
+			"X": [],
+			"O": [],
+			"R": [],
+			"L": []
+		}
+	},
+	"eyes shape" : {
+		"extra round" : {
+			"X": ["good creative abilities", "imagination", "open-minded"],
+			"O": ["sociable", "love to interact with people", "credible", "easy to get to know"],
+			"R": ["do not like to deal with details, preferring a wide range of issues"],
+			"L": []
+		},
+		"round" : {
+			"X": ["soft", "kind", "good creative abilities"],
+			"O": [],
+			"R": ["choose a variety over the depth of study"],
+			"L": []
+		},
+		"average" : {
+			"X": ["emotional", "affectionate", "tender"],
+			"O": [],
+			"R": [],
+			"L": []
+		},
+		"thin" : {
+			"X": ["curious"],
+			"O": [],
+			"R": ["can be lazy if not motivated", "love to get into the details"],
+			"L": []
+		},	
+		"extra thin" : {
+			"X": ["have a deep character"],
+			"O": [],
+			"R": ["great ability to concentrate"],
+			"L": []
+		}
+	}
+}

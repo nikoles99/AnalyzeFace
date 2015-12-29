@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -40,6 +42,7 @@ public class AnalyzeActivity extends AppCompatActivity
     private static final String MAKE_PHOTO = "Please select image or make photo on camera";
     private static final String INVALID_IMAGE = "Invalid Image";
     private static final String DATA = "data";
+    public static final String ANALYZE_TYPE = "extended";
 
     private ImageView openGallery;
 
@@ -74,8 +77,7 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType(TYPE);
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
@@ -92,7 +94,7 @@ public class AnalyzeActivity extends AppCompatActivity
                     image = getImageFromGallery(data);
                     break;
             }
-            analyze(image, "extended");
+            analyze(image, ANALYZE_TYPE);
         }
     }
 
@@ -120,7 +122,7 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
     private void showMessage(String message) {
-        Snackbar.make(openGallery, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void getPhotoUid(Bitmap bitmap, String flag) {
@@ -151,8 +153,7 @@ public class AnalyzeActivity extends AppCompatActivity
                 intent.putExtra(AnalyzeResultActivity.LIST_FACES, (Serializable) faceList);
                 intent.putExtra(AnalyzeResultActivity.PHOTO, image);
                 startActivity(intent);
-            }
-            else {
+            } else {
                 showMessage("error responseOk");
             }
         } else {
