@@ -8,6 +8,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.gson.JsonObject;
+
+import by.balinasoft.faceanalyzer.constants.Constants;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +24,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        JsonObject language = FaceAnalyzerApplication.getAppLanguage();
+
+        String title = language.get(Constants.ANALYSIS).getAsString();
+        getSupportActionBar().setTitle(title);
+
+        String analysis = language.get(Constants.ANALYSIS).getAsString();
+        ((TextView)findViewById(R.id.analyzeTextView)).setText(analysis);
+
+        String statistic = language.get(Constants.STATS).getAsString();
+        ((TextView)findViewById(R.id.statisticTextView)).setText(statistic);
+
+        String termsOfUse = language.get(Constants.EULA).getAsString();
+        ((TextView)findViewById(R.id.termOfUseTextView)).setText(termsOfUse);
+
+        String share = language.get(Constants.SHARE).getAsString();
+        ((TextView)findViewById(R.id.shareTextView)).setText(share);
+
         ImageView analyze = (ImageView) findViewById(R.id.analyzeButton);
         analyze.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -27,16 +49,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageView termsOfUse = (ImageView) findViewById(R.id.termsOfUse);
-        termsOfUse.setOnClickListener(new View.OnClickListener() {
+        ImageView termsOfUseImageView = (ImageView) findViewById(R.id.termsOfUse);
+        termsOfUseImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, TermsOfUseActivity.class));
             }
         });
 
-        ImageView statistic = (ImageView) findViewById(R.id.statistic);
-        statistic.setOnClickListener(new View.OnClickListener() {
+        ImageView statisticImageView = (ImageView) findViewById(R.id.statistic);
+        statisticImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, StatisticActivity.class));

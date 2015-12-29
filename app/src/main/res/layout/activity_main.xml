@@ -48,11 +48,11 @@
                 android:background="@drawable/loop"/>
 
             <TextView
+                android:id="@+id/analyzeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/analyzeButton"
-                android:layout_centerHorizontal="true"
-                android:text="Анализ"/>
+                android:layout_centerHorizontal="true"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -71,13 +71,13 @@
                 android:background="@drawable/document"/>
 
             <TextView
+                android:id="@+id/termOfUseTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/termsOfUse"
                 android:layout_marginTop="5dp"
-                android:gravity="center"
-                android:text="Условия \n использования"/>
+                android:gravity="center"/>
 
             <ImageView
                 android:id="@+id/statistic"
@@ -87,13 +87,13 @@
                 android:background="@drawable/statistick"/>
 
             <TextView
+                android:id="@+id/statisticTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/statistic"
                 android:layout_centerHorizontal="true"
-                android:layout_marginRight="10dp"
-                android:text="Статистака"/>
+                android:layout_marginRight="10dp"/>
 
         </RelativeLayout>
 
@@ -114,10 +114,10 @@
             android:background="#c4c2c2"/>
 
         <TextView
+            android:id="@+id/shareTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Поделиться"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <LinearLayout

@@ -53,6 +53,11 @@ public class AnalyzeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze);
 
+        JsonObject language = FaceAnalyzerApplication.getAppLanguage();
+
+        String title = language.get(Constants.ANALYSIS).getAsString();
+        getSupportActionBar().setTitle(title);
+
         ImageView makePhoto = (ImageView)
                 findViewById(R.id.makePhoto);
         makePhoto.setOnClickListener(new View.OnClickListener() {

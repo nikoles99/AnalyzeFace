@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +38,11 @@ public class AnalyzeResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze_result);
+
+        JsonObject language = FaceAnalyzerApplication.getAppLanguage();
+
+        String title = language.get(Constants.ANALYSES_RESULT).getAsString();
+        getSupportActionBar().setTitle(title);
 
         List<Face> faceList = (List<Face>) getIntent().getSerializableExtra(LIST_FACES);
 

@@ -2,21 +2,20 @@ package by.balinasoft.faceanalyzer;
 
 import android.app.Application;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 
 import by.balinasoft.faceanalyzer.constants.Constants;
+import by.balinasoft.faceanalyzer.utils.JsonFileReader;
 
 public class FaceAnalyzerApplication extends Application {
 
     private static final String WORDS_TRANSLATION_FILE = "words-translation.json";
+    private static final String ENGLISH = "EN";
+    private static final String RUSSIAN = "RU";
+
+    private static JsonObject appLanguage;
 
     @Override
     public void onCreate() {
@@ -24,41 +23,22 @@ public class FaceAnalyzerApplication extends Application {
         setApplicationLanguage();
     }
 
-    private void setApplicationLanguage() {
-        String deviceLanguage = Locale.getDefault().getDisplayLanguage();
-
-        JsonObject jsonObject = loadJsonFile(WORDS_TRANSLATION_FILE);
-/*
-        switch (deviceLanguage) {
-            case Constants.RUSSIAN_LANGUAGE:
-                languageFileName = RUSSIAN_TABLE_FILE;
-                break;
-            default:
-                languageFileName = ENGLISH_TABLE_FILE;
-                break;
-        }*/
-        String d = jsonObject.toString();
+    public static JsonObject getAppLanguage() {
+        return appLanguage;
     }
 
+    private void setApplicationLanguage() {
+        String deviceLanguage = Locale.getDefault().getDisplayLanguage();
+        JsonObject jsonObject = JsonFileReader.
+                loadJsonFile(getApplicationContext(), WORDS_TRANSLATION_FILE);
 
-    private JsonObject loadJsonFile(String fileName) {
-        JsonObject jsonObject = new JsonObject();
-
-        try {
-            InputStream is = getAssets().open(fileName);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            JsonParser parser = new JsonParser();
-            JsonElement jsonElement = parser.parse(new String(buffer, "UTF-8"));
-            jsonObject = jsonElement.getAsJsonObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        switch (deviceLanguage) {
+            case Constants.RUSSIAN_LANGUAGE:
+                appLanguage = jsonObject.getAsJsonObject(RUSSIAN);
+                break;
+            default:
+                appLanguage = jsonObject.getAsJsonObject(ENGLISH);
+                break;
         }
-        return jsonObject;
-
     }
 }
