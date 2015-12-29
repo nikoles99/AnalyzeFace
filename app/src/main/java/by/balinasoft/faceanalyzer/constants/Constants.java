@@ -40,6 +40,12 @@ public class Constants {
 
     public static final String FACE_PROPERTIES = "tags";
 
+    public static final String ENGLISH_TERMS_OF_USE = "EULA-en.html";
+    public static final String RUSSIAN_TERMS_OF_USE = "EULA-ru.html";
+
+    public static final String ENGLISH_MAPPING_TABLE = "mapping-table-en.json";
+    public static final String RUSSIAN_MAPPING_TABLE = "mapping-table-ru.json";
+
     public static final String EN = "EN";
     public static final String RU = "RU";
     public static final String STATS = "Stats";

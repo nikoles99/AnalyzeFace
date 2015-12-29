@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -105,7 +106,8 @@ public class AnalyzeActivity extends AppCompatActivity
 
     private void analyze(Bitmap image, String flag) {
         if (image != null) {
-            new PhotoExecutor(flag).execute(image);
+            getFaceInfo("95188f86-c3c8-4d34-80b3-745187a7e838");
+         //   new PhotoExecutor(flag).execute(image);
         } else {
             showMessage(MAKE_PHOTO);
         }
@@ -159,7 +161,7 @@ public class AnalyzeActivity extends AppCompatActivity
                 intent.putExtra(AnalyzeResultActivity.PHOTO, image);
                 startActivity(intent);
             } else {
-                showMessage("error responseOk");
+                showMessage(responseOk);
             }
         } else {
             showMessage("error");
@@ -207,7 +209,7 @@ public class AnalyzeActivity extends AppCompatActivity
             super.onPostExecute(uid);
 
             if (exception == null || !uid.isEmpty()) {
-                getFaceInfo(uid);
+                getFaceInfo("95188f86-c3c8-4d34-80b3-745187a7e838");
             } else {
                 showMessage(exception.getMessage());
             }

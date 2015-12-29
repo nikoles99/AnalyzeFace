@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONException;
@@ -14,11 +16,15 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.model.Face;
+import by.balinasoft.faceanalyzer.model.FaceProperties;
+import by.balinasoft.faceanalyzer.model.HumanQuality;
+import by.balinasoft.faceanalyzer.utils.FileReader;
 
 public class AnalyzeResultActivity extends AppCompatActivity {
 
@@ -33,6 +39,8 @@ public class AnalyzeResultActivity extends AppCompatActivity {
     private ListView listView;
     private ImageView imageView;
     private ArrayAdapter<String> arrayAdapter;
+    private List<Face> faceList;
+    private JsonObject mappingTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +52,49 @@ public class AnalyzeResultActivity extends AppCompatActivity {
         String title = language.get(Constants.ANALYSES_RESULT).getAsString();
         getSupportActionBar().setTitle(title);
 
-        List<Face> faceList = (List<Face>) getIntent().getSerializableExtra(LIST_FACES);
+        String tableFile = FaceAnalyzerApplication.getMappingTableFile();
+        mappingTable = FileReader.loadJsonFile(this, tableFile);
 
-        String[] strings = new String[]{"sdfsdfsf", "sdfsdfsdf", "sdfsdfsddf", "sdfsdfdsdf", "sdfsdfdsdf"};
+        faceList = (List<Face>) getIntent().getSerializableExtra(LIST_FACES);
+
+
+        List<HumanQuality> humanQualityList = analyzeFace();
+
         listView = (ListView) findViewById(R.id.listView);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, strings);
 
-        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.photo);
         bitmap = getIntent().getParcelableExtra(PHOTO);
-//        imageView.setImageBitmap(bitmap);
+        imageView.setImageBitmap(bitmap);
         setApplicationLanguage();
 
+    }
+
+    private List<HumanQuality> analyzeFace() {
+        for (Face face : faceList) {
+            return analyzeFaceProperties(face);
+        }
+        return null;
+    }
+
+    private List<HumanQuality> analyzeFaceProperties(Face face) {
+        List<HumanQuality> humanQualityList = new ArrayList<>();
+
+        for (FaceProperties faceProperties : face.getFaceProperties()) {
+            JsonObject name = mappingTable.getAsJsonObject(faceProperties.getName());
+            if (name != null) {
+                JsonObject valueQuality = name.getAsJsonObject(faceProperties.getValue());
+                JsonArray character = valueQuality.getAsJsonArray("X");
+                JsonArray relationsWithPeople = valueQuality.getAsJsonArray("O");
+                for (JsonElement element : character) {
+                    humanQualityList.add(new HumanQuality("X", element.getAsString(), faceProperties.getConfidence()));
+                }
+                for (JsonElement element : relationsWithPeople) {
+                    humanQualityList.add(new HumanQuality("O", element.getAsString(), faceProperties.getConfidence()));
+                }
+            }
+
+        }
+        return  humanQualityList;
     }
 
     private void setApplicationLanguage() {
@@ -72,13 +112,12 @@ public class AnalyzeResultActivity extends AppCompatActivity {
         String json = loadJSONFromAsset(languageFileName);
         JSONObject jsonObject;
         try {
-             jsonObject = new JSONObject(json);
+            jsonObject = new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         String d = json.substring(0);
     }
-
 
 
     private String loadJSONFromAsset(String fileName) {

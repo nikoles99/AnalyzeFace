@@ -1,22 +1,24 @@
 package by.balinasoft.faceanalyzer;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.webkit.WebView;
 
-import com.google.gson.JsonObject;
+import by.balinasoft.faceanalyzer.utils.FileReader;
 
-import by.balinasoft.faceanalyzer.constants.Constants;
+public class TermsOfUseActivity extends Activity {
 
-public class TermsOfUseActivity extends AppCompatActivity {
+    private static final String TYPE = "text/html; charset=UTF-8";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_of_use);
 
-        JsonObject language = FaceAnalyzerApplication.getAppLanguage();
+        String eula = FaceAnalyzerApplication.getEula();
 
-        String title = language.get(Constants.EULA).getAsString();
-        getSupportActionBar().setTitle(title);
+        String text = FileReader.loadFile(getApplicationContext(), eula);
+        WebView webView = (WebView)findViewById(R.id.termsOfUse);
+        webView.loadData(text, TYPE, null);
     }
 }
