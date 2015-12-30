@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -58,6 +59,12 @@ public class AnalyzeActivity extends AppCompatActivity
         mappingTable = ((FaceAnalyzerApplication) getApplicationContext()).getMappingTable();
         String title = language.get(Constants.ANALYSIS).getAsString();
         getSupportActionBar().setTitle(title);
+
+        String makePhotoTitle = language.get(Constants.TAKE_PHOTO).getAsString();
+        ((TextView) findViewById(R.id.makePhotoTitle)).setText(makePhotoTitle);
+
+        String loadFromGalleryTitle = language.get(Constants.CHOOSE_FROM_GALLERY).getAsString();
+        ((TextView) findViewById(R.id.loadFromGalleryTitle)).setText(loadFromGalleryTitle);
 
         ImageView makePhoto = (ImageView)
                 findViewById(R.id.makePhoto);
