@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Xml;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -109,8 +112,8 @@ public class AnalyzeActivity extends AppCompatActivity
 
     private void analyze(Bitmap image, String flag) {
         if (image != null) {
-            //getFaceInfo("95188f86-c3c8-4d34-80b3-745187a7e838");
-            new PhotoExecutor(flag).execute(image);
+            getFaceInfo("c1546a5d-0976-4988-a557-3bfded74182e");
+            //new PhotoExecutor(flag).execute(image);
         } else {
             showMessage(MAKE_PHOTO);
         }
@@ -135,14 +138,13 @@ public class AnalyzeActivity extends AppCompatActivity
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void getPhotoUid(Bitmap bitmap, String flag) {
+/*    private void getPhotoUid(Bitmap bitmap, String flag) {
         String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
-        String xmlRequest = PhotoFormatUtility.toXml(base64Photo, flag);
-
-        FaceAnalyzerLoader<String> analyzerLoader = new PhotoUidLoader();
+        String jsonObject = PhotoFormatUtility.toXml(base64Photo, flag);
+        FaceAnalyzerLoader<JsonObject> analyzerLoader = new PhotoUidLoader();
         analyzerLoader.setServerObserver(this);
-        analyzerLoader.makeRequest(xmlRequest);
-    }
+        analyzerLoader.makeRequest(jsonObject);
+    }*/
 
     private void getFaceInfo(String photoUid) {
         FaceAnalyzerLoader<JsonObject> analyzerLoader = new PhotoInfoLoader();
@@ -179,30 +181,32 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
 
-    private List<HumanQuality> analyzeByMappingTable(JsonArray faces) {
+    private Map<String, List<HumanQuality>> analyzeByMappingTable(JsonArray faces) {
         List<Face> faceList = new Gson().fromJson(faces, new TypeToken<List<Face>>() {
         }.getType());
+        Map<String, List<HumanQuality>> faceMap = new HashMap<>();
 
         for (Face face : faceList) {
-            return analyzeFaceProperties(face);
+            faceMap.put(face.getUid(), analyzeFaceProperties(face));
         }
-        return null;
+        return faceMap;
     }
 
     private List<HumanQuality> analyzeFaceProperties(Face face) {
         List<HumanQuality> humanQualityList = new ArrayList<>();
-
         for (FaceProperties faceProperties : face.getFaceProperties()) {
             JsonObject name = mappingTable.getAsJsonObject(faceProperties.getName());
             if (name != null) {
+
                 JsonObject valueQuality = name.getAsJsonObject(faceProperties.getValue());
                 JsonArray character = valueQuality.getAsJsonArray("X");
                 JsonArray relationsWithPeople = valueQuality.getAsJsonArray("O");
+
                 for (JsonElement element : character) {
-                    humanQualityList.add(new HumanQuality("X", element.getAsString(), faceProperties.getConfidence()));
+                    humanQualityList.add(new HumanQuality("Характер", element.getAsString(), faceProperties.getConfidence()));
                 }
                 for (JsonElement element : relationsWithPeople) {
-                    humanQualityList.add(new HumanQuality("O", element.getAsString(), faceProperties.getConfidence()));
+                    humanQualityList.add(new HumanQuality("Отношение с людьми", element.getAsString(), faceProperties.getConfidence()));
                 }
             }
 
@@ -254,6 +258,7 @@ public class AnalyzeActivity extends AppCompatActivity
 
         private String getPhotoUid(Bitmap bitmap, String flag) throws IOException {
             String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
+            byte[] bytes = PhotoFormatUtility.base64Decode(base64Photo);
             String xmlRequest = PhotoFormatUtility.toXml(base64Photo, flag);
             InputStream response = new ApiConnector(URL_REQUEST_UID).makeXmlRequest(xmlRequest);
             return PhotoFormatUtility.parse(response);

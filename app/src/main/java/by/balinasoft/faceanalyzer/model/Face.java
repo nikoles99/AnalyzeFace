@@ -12,6 +12,9 @@ public class Face implements Serializable {
     @SerializedName(Constants.FACE_PROPERTIES)
     private List<FaceProperties> faceProperties;
 
+    @SerializedName(Constants.FACE_UID)
+    private String uid;
+
     public List<FaceProperties> getFaceProperties() {
         return faceProperties;
     }
@@ -20,4 +23,7 @@ public class Face implements Serializable {
         this.faceProperties = faceProperties;
     }
 
+    public String getUid() {
+        return uid;
+    }
 }

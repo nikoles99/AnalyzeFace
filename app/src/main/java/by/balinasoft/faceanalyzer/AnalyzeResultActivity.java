@@ -2,8 +2,10 @@ package by.balinasoft.faceanalyzer;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -11,7 +13,9 @@ import com.google.gson.JsonObject;
 
 
 import java.util.List;
+import java.util.Map;
 
+import by.balinasoft.faceanalyzer.adapters.HumanQualityAdapter;
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.model.HumanQuality;
 
@@ -23,9 +27,9 @@ public class AnalyzeResultActivity extends AppCompatActivity {
 
 
     private Bitmap bitmap;
-    private ListView listView;
+    private ExpandableListView listView;
     private ImageView imageView;
-    private ArrayAdapter<String> arrayAdapter;
+    private HumanQualityAdapter humanQualityAdapter;
 
 
     @Override
@@ -38,15 +42,14 @@ public class AnalyzeResultActivity extends AppCompatActivity {
         String title = language.get(Constants.ANALYSES_RESULT).getAsString();
         getSupportActionBar().setTitle(title);
 
-        List<HumanQuality> humanQualities = (List<HumanQuality>) getIntent().
+        Map<String, List<HumanQuality>> humanQualities = (Map<String, List<HumanQuality>>) getIntent().
                 getSerializableExtra(HUMAN_QUALITY_LIST);
 
-        listView = (ListView) findViewById(R.id.listView);
-
+        listView = (ExpandableListView) findViewById(R.id.listView);
+        humanQualityAdapter = new HumanQualityAdapter(this, humanQualities);
+        listView.setAdapter(humanQualityAdapter);
         imageView = (ImageView) findViewById(R.id.photo);
         bitmap = getIntent().getParcelableExtra(PHOTO);
         imageView.setImageBitmap(bitmap);
-
     }
-
 }

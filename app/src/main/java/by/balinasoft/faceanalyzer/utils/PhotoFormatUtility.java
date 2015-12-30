@@ -3,12 +3,16 @@ package by.balinasoft.faceanalyzer.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Xml;
 
 import com.google.gson.JsonObject;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -16,8 +20,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import by.balinasoft.faceanalyzer.model.FaceProperties;
 import by.balinasoft.faceanalyzer.model.Face;
@@ -75,74 +83,52 @@ public class PhotoFormatUtility {
                 "</ImageRequestBinary>";
     }
 
-    public static JSONObject toJson(byte[] photo) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(API_SECRET, SECRET);
-            jsonObject.put(DETECTION_FLAGS, FLAG);
-            jsonObject.put(IMAGE_FILE_DATA, toJsonArray(photo));
-            jsonObject.put(ORIGINAL_FILENAME, ORIGINAL_FILENAME);
-            jsonObject.put(API_KEY, API);
-            return jsonObject;
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format("Invalid byte[] format %s", photo), e);
-        }
+    public static JsonObject toJson(String photo, String FLAG) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(API_KEY, API);
+        jsonObject.addProperty(API_SECRET, SECRET);
+        jsonObject.addProperty(DETECTION_FLAGS, FLAG);
+        jsonObject.addProperty(IMAGE_FILE_DATA, photo);
+        jsonObject.addProperty(ORIGINAL_FILENAME, "sample1.jpg");
+        return jsonObject;
     }
 
-    private static JSONArray toJsonArray(byte[] params) {
-        JSONArray jsonArray = new JSONArray();
+    private static final String codes = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-        for (byte param : params) {
-            jsonArray.put((int) param);
+    public static byte[] base64Decode(String input)    {
+        if (input.length() % 4 != 0)    {
+            throw new IllegalArgumentException("Invalid base64 input");
         }
-        return jsonArray;
+        byte decoded[] = new byte[((input.length() * 3) / 4) - (input.indexOf('=') > 0 ? (input.length() - input.indexOf('=')) : 0)];
+        char[] inChars = input.toCharArray();
+        int j = 0;
+        int b[] = new int[4];
+        for (int i = 0; i < inChars.length; i += 4)     {
+            // This could be made faster (but more complicated) by precomputing these index locations
+            b[0] = codes.indexOf(inChars[i]);
+            b[1] = codes.indexOf(inChars[i + 1]);
+            b[2] = codes.indexOf(inChars[i + 2]);
+            b[3] = codes.indexOf(inChars[i + 3]);
+            decoded[j++] = (byte) ((b[0] << 2) | (b[1] >> 4));
+            if (b[2] < 64)      {
+                decoded[j++] = (byte) ((b[1] << 4) | (b[2] >> 2));
+                if (b[3] < 64)  {
+                    decoded[j++] = (byte) ((b[2] << 6) | b[3]);
+                }
+            }
+        }
+
+        return decoded;
     }
 
     public static JsonObject prepareJsonImageInfo(String imageUid) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(API_KEY, API);
-            jsonObject.addProperty(API_SECRET, SECRET);
-            jsonObject.addProperty(IMAGE_UID, imageUid);
-            return jsonObject;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(API_KEY, API);
+        jsonObject.addProperty(API_SECRET, SECRET);
+        jsonObject.addProperty(IMAGE_UID, imageUid);
+        return jsonObject;
     }
 
-    public static List<Face> parse(JSONObject jsonObject) {
-        try {
-            JSONArray faceProperties = jsonObject.getJSONArray(TAG_FACES);
-            return getFace(faceProperties);
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format("Invalid JSONArray format %s",
-                    jsonObject), e);
-        }
-    }
-
-    private static List<Face> getFace(JSONArray jsonProperties) throws JSONException {
-        List<Face> facesList = new ArrayList<>();
-
-        for (int i = 0; i < jsonProperties.length(); i++) {
-            Face face = new Face();
-
-            List<FaceProperties> faceProperties = getFaceProperties(jsonProperties.
-                    getJSONObject(i));
-            face.setFaceProperties(faceProperties);
-
-            facesList.add(face);
-        }
-        return facesList;
-    }
-
-    private static List<FaceProperties> getFaceProperties(JSONObject face) throws JSONException {
-        JSONArray tags = face.getJSONArray(TAG_TAGS);
-        List<FaceProperties> faceProperties = new ArrayList<>();
-
-        for (int j = 0; j < tags.length(); j++) {
-            String confidence = tags.getJSONObject(j).getString(TAG_CONFIDENCE);
-            String name = tags.getJSONObject(j).getString(TAG_NAME);
-            String value = tags.getJSONObject(j).getString(TAG_VALUE);
-            faceProperties.add(new FaceProperties(Double.parseDouble(confidence), name, value));
-        }
-        return faceProperties;
-    }
 
     public static String parse(InputStream xml) throws IOException {
         try {
@@ -172,57 +158,10 @@ public class PhotoFormatUtility {
     }
 
 
-    public static String base64Encode(byte[] in) {
-        StringBuffer out = new StringBuffer((in.length * 4) / 3);
-        int b;
-        for (int i = 0; i < in.length; i += 3) {
-            b = (in[i] & 0xFC) >> 2;
-            out.append(CODES.charAt(b));
-            b = (in[i] & 0x03) << 4;
-            if (i + 1 < in.length) {
-                b |= (in[i + 1] & 0xF0) >> 4;
-                out.append(CODES.charAt(b));
-                b = (in[i + 1] & 0x0F) << 2;
-                if (i + 2 < in.length) {
-                    b |= (in[i + 2] & 0xC0) >> 6;
-                    out.append(CODES.charAt(b));
-                    b = in[i + 2] & 0x3F;
-                    out.append(CODES.charAt(b));
-                } else {
-                    out.append(CODES.charAt(b));
-                    out.append('=');
-                }
-            } else {
-                out.append(CODES.charAt(b));
-                out.append("==");
-            }
-        }
-        return out.toString();
-    }
-
     public static String bitmapToString(Bitmap image) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] b = stream.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
-    public static Bitmap stringToBitmap(String input) {
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
-
-    public static boolean checkJson(JSONObject jsonObject) throws IOException {
-        try {
-            String message = jsonObject.getString(STRING_RESPONSE);
-            if (message.equals(OK)) {
-                return true;
-            } else {
-                throw new IOException(message + ", please try again");
-            }
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format("Invalid " +
-                    "JSONObject format %s", jsonObject), e);
-        }
     }
 }

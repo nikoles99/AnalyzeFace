@@ -4,9 +4,9 @@ public class Constants {
 
     public static final String URL = "http://betafaceapi.com/";
 
-    public static final int CONNECT_TIMEOUT = 60;
-    public static final int WRITE_TIMEOUT = 120;
-    public static final int TIMEOUT = 120;
+    public static final int CONNECT_TIMEOUT = 2000;
+    public static final int WRITE_TIMEOUT = 2000;
+    public static final int TIMEOUT = 2000;
 
     public static final String RUSSIAN_LANGUAGE = "русский";
 
@@ -39,6 +39,7 @@ public class Constants {
     public static final String FACES = "faces";
 
     public static final String FACE_PROPERTIES = "tags";
+    public static final String FACE_UID = "uid";
 
     public static final String ENGLISH_TERMS_OF_USE = "EULA-en.html";
     public static final String RUSSIAN_TERMS_OF_USE = "EULA-ru.html";
