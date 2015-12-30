@@ -47,6 +47,9 @@ public class Constants {
     public static final String ENGLISH_MAPPING_TABLE = "mapping-table-en.json";
     public static final String RUSSIAN_MAPPING_TABLE = "mapping-table-ru.json";
 
+    public static final String CHARACTER = "X";
+    public static final String RALATIONSHIP = "O";
+
     public static final String EN = "EN";
     public static final String RU = "RU";
     public static final String STATS = "Stats";
@@ -70,7 +73,6 @@ public class Constants {
     public static final String CANCEL = "Cancel";
     public static final String UPLOAD_FAILED = "UploadFailed";
     public static final String SOCIAL_RELATIONS = "SocialRelations";
-    public static final String CHARACTER = "Character";
     public static final String RESULT = "Result";
     public static final String RESPONSE = "string_response";
 }

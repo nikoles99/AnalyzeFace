@@ -1,9 +1,7 @@
 package by.balinasoft.faceanalyzer.adapters;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,20 +12,21 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import by.balinasoft.faceanalyzer.R;
-import by.balinasoft.faceanalyzer.model.HumanQuality;
+import by.balinasoft.faceanalyzer.model.Face;
+import by.balinasoft.faceanalyzer.model.FaceProperties;
 
-public class HumanQualityAdapter extends BaseExpandableListAdapter {
+public class FaceAdapter extends BaseExpandableListAdapter {
 
     private static final List<String> QUALITIES = new ArrayList<String>() {{
         add("Характер");
         add("Отношение с людьми");
     }};
 
-    private Map<String, List<HumanQuality>> faceMap;
+    private List<Face> faceMap;
 
     private LayoutInflater layoutInflater;
 
-    public HumanQualityAdapter(Context context, Map<String, List<HumanQuality>> faceMap) {
+    public FaceAdapter(Context context, List<Face> faceMap) {
         this.faceMap = faceMap;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -53,7 +52,7 @@ public class HumanQualityAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int i, int i1) {
-        Collection<List<HumanQuality>> list = faceMap.values();
+        return faceMap.get(i).getFaceProperties().get(i1);
     }
 
     @Override
@@ -91,10 +90,10 @@ public class HumanQualityAdapter extends BaseExpandableListAdapter {
         if (view == null) {
             view = getLayoutInflater().inflate(R.layout.item_child_quality_adapter, parent, false);
         }
-        HumanQuality humanQuality = (HumanQuality) getChild(groupPosition, childPosition);
+        FaceProperties faceProperties = (FaceProperties) getChild(groupPosition, childPosition);
 
-        ((TextView) view.findViewById(R.id.childQuality)).setText(humanQuality.getValue());
-        ((TextView) view.findViewById(R.id.accuracy)).setText(humanQuality.getAccuracy() + "%");
+        ((TextView) view.findViewById(R.id.childQuality)).setText(faceProperties.getValue());
+        ((TextView) view.findViewById(R.id.accuracy)).setText(faceProperties.getConfidence()*100 + "%");
         return view;
     }
 

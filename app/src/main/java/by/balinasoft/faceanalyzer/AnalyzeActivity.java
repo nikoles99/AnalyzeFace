@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,7 +13,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Xml;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -30,10 +27,8 @@ import com.google.gson.reflect.TypeToken;
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.loaders.FaceAnalyzerLoader;
 import by.balinasoft.faceanalyzer.loaders.PhotoInfoLoader;
-import by.balinasoft.faceanalyzer.loaders.PhotoUidLoader;
 import by.balinasoft.faceanalyzer.model.Face;
 import by.balinasoft.faceanalyzer.model.FaceProperties;
-import by.balinasoft.faceanalyzer.model.HumanQuality;
 import by.balinasoft.faceanalyzer.utils.PhotoFormatUtility;
 import by.balinasoft.faceanalyzer.utils.ServerObserver;
 
@@ -50,17 +45,16 @@ public class AnalyzeActivity extends AppCompatActivity
     public static final String ANALYZE_TYPE = "extended";
     public static final String RESPONSE_OK = "ok";
 
-    private ImageView openGallery;
-
     private Bitmap image;
     private JsonObject mappingTable;
+    private JsonObject language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze);
 
-        JsonObject language = ((FaceAnalyzerApplication) getApplicationContext()).getAppLanguage();
+        language = ((FaceAnalyzerApplication) getApplicationContext()).getAppLanguage();
         mappingTable = ((FaceAnalyzerApplication) getApplicationContext()).getMappingTable();
         String title = language.get(Constants.ANALYSIS).getAsString();
         getSupportActionBar().setTitle(title);
@@ -74,7 +68,7 @@ public class AnalyzeActivity extends AppCompatActivity
             }
         });
 
-        openGallery = (ImageView) findViewById(R.id.loadFromGallery);
+        ImageView openGallery = (ImageView) findViewById(R.id.loadFromGallery);
         openGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,15 +150,9 @@ public class AnalyzeActivity extends AppCompatActivity
     @Override
     public void successExecute(JsonObject jsonObject) {
         if (jsonObject != null) {
-            String responseOk = jsonObject.get(Constants.RESPONSE).getAsString();
-            if (responseOk.equals(RESPONSE_OK)) {
-                JsonArray faces = jsonObject.getAsJsonArray(Constants.FACES);
-                showHumanQuality((Serializable) analyzeByMappingTable(faces));
-            } else {
-                showMessage(responseOk);
-            }
+            handleResponse(jsonObject);
         } else {
-            showMessage("error");
+            showMessage(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
         }
     }
 
@@ -173,45 +161,65 @@ public class AnalyzeActivity extends AppCompatActivity
         showMessage(errorMessage);
     }
 
-    private void showHumanQuality(Serializable humanQualityList) {
+
+    private void handleResponse(JsonObject jsonObject) {
+        String status = jsonObject.get(Constants.RESPONSE).getAsString();
+
+        if (status.equals(RESPONSE_OK)) {
+            JsonArray faces = jsonObject.getAsJsonArray(Constants.FACES);
+            List<Face> serverFaceList = new Gson().fromJson(faces, new TypeToken<List<Face>>() {
+            }.getType());
+            showHumanQuality((Serializable) localFaceListAnalyze(serverFaceList));
+        } else {
+            showMessage(status);
+        }
+    }
+
+    private void showHumanQuality(Serializable faceList) {
         Intent intent = new Intent(AnalyzeActivity.this, AnalyzeResultActivity.class);
-        intent.putExtra(AnalyzeResultActivity.HUMAN_QUALITY_LIST, humanQualityList);
+        intent.putExtra(AnalyzeResultActivity.FACE_LIST, faceList);
         intent.putExtra(AnalyzeResultActivity.PHOTO, image);
         startActivity(intent);
     }
 
+    private List<Face> localFaceListAnalyze(List<Face> serverFaceList) {
+        List<Face> localFaceList = new ArrayList<>();
 
-    private Map<String, List<HumanQuality>> analyzeByMappingTable(JsonArray faces) {
-        List<Face> faceList = new Gson().fromJson(faces, new TypeToken<List<Face>>() {
-        }.getType());
-        Map<String, List<HumanQuality>> faceMap = new HashMap<>();
-
-        for (Face face : faceList) {
-            faceMap.put(face.getUid(), analyzeFaceProperties(face));
+        for (Face serverFace : serverFaceList) {
+            localFaceList.add(localFaceAnalyze(serverFace));
         }
-        return faceMap;
+        return localFaceList;
     }
 
-    private List<HumanQuality> analyzeFaceProperties(Face face) {
-        List<HumanQuality> humanQualityList = new ArrayList<>();
-        for (FaceProperties faceProperties : face.getFaceProperties()) {
-            JsonObject name = mappingTable.getAsJsonObject(faceProperties.getName());
-            if (name != null) {
+    private Face localFaceAnalyze(Face serverFace) {
+        Face localFace = new Face();
 
-                JsonObject valueQuality = name.getAsJsonObject(faceProperties.getValue());
-                JsonArray character = valueQuality.getAsJsonArray("X");
-                JsonArray relationsWithPeople = valueQuality.getAsJsonArray("O");
-
-                for (JsonElement element : character) {
-                    humanQualityList.add(new HumanQuality("Характер", element.getAsString(), faceProperties.getConfidence()));
-                }
-                for (JsonElement element : relationsWithPeople) {
-                    humanQualityList.add(new HumanQuality("Отношение с людьми", element.getAsString(), faceProperties.getConfidence()));
-                }
-            }
-
+        for (FaceProperties serverFaceProperty : serverFace.getFaceProperties()) {
+            localAnalyzeProperty(localFace, serverFaceProperty);
         }
-        return humanQualityList;
+        return localFace;
+    }
+
+    private void localAnalyzeProperty(Face localFace, FaceProperties serverFaceProperty) {
+        JsonObject nameProperty = mappingTable.getAsJsonObject(serverFaceProperty.getName());
+
+        if (nameProperty != null) {
+            JsonObject valueProperty = nameProperty.getAsJsonObject(serverFaceProperty.getValue());
+
+            createProperty(Constants.CHARACTER, localFace, serverFaceProperty, valueProperty);
+            createProperty(Constants.RALATIONSHIP, localFace, serverFaceProperty, valueProperty);
+        }
+    }
+
+    private void createProperty(String typeHumanQuality, Face localFace,
+                                FaceProperties serverFaceProperty, JsonObject valueProperty) {
+        JsonArray humanQualities = valueProperty.getAsJsonArray(typeHumanQuality);
+
+        for (JsonElement quality : humanQualities) {
+            FaceProperties localFaceProperty = new FaceProperties(serverFaceProperty.
+                    getConfidence(), typeHumanQuality, quality.getAsString());
+            localFace.addProperty(localFaceProperty);
+        }
     }
 
 
