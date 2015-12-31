@@ -11,24 +11,32 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
+
+import by.balinasoft.faceanalyzer.FaceAnalyzerApplication;
 import by.balinasoft.faceanalyzer.R;
+import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.model.Face;
 import by.balinasoft.faceanalyzer.model.FaceProperties;
 
 public class FaceAdapter extends BaseExpandableListAdapter {
 
-    private static final List<String> QUALITIES = new ArrayList<String>() {{
-        add("Характер");
-        add("Отношение с людьми");
-    }};
+    private List<String> qualities;
 
-    private List<Face> faceMap;
+    private JsonObject language;
+
+    private Face face;
 
     private LayoutInflater layoutInflater;
 
-    public FaceAdapter(Context context, List<Face> faceMap) {
-        this.faceMap = faceMap;
+    public FaceAdapter(Context context, Face face) {
+        this.face = face;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        language = ((FaceAnalyzerApplication) context.getApplicationContext()).getAppLanguage();
+        qualities = new ArrayList<String>() {{
+            add(Constants.CHARACTER);
+            add(Constants.RALATIONSHIP);
+        }};
     }
 
     protected LayoutInflater getLayoutInflater() {
@@ -37,22 +45,25 @@ public class FaceAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return faceMap.size();
+        return qualities.size();
     }
 
     @Override
     public int getChildrenCount(int i) {
-        return faceMap.size();
+        String quality = qualities.get(i);
+        return face.getQualitiesList(quality).size();
     }
 
     @Override
     public Object getGroup(int i) {
-        return QUALITIES.get(i);
+        return qualities.get(i);
     }
 
     @Override
     public Object getChild(int i, int i1) {
-        return faceMap.get(i).getFaceProperties().get(i1);
+        String quality = qualities.get(i);
+        List<FaceProperties> faceProperties = face.getQualitiesList(quality);
+        return faceProperties.get(i1);
     }
 
     @Override
@@ -84,7 +95,8 @@ public class FaceAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean b, View convertView, ViewGroup parent) {
+    public View getChildView(int groupPosition, int childPosition, boolean b,
+                             View convertView, ViewGroup parent) {
         View view = convertView;
 
         if (view == null) {
@@ -93,7 +105,8 @@ public class FaceAdapter extends BaseExpandableListAdapter {
         FaceProperties faceProperties = (FaceProperties) getChild(groupPosition, childPosition);
 
         ((TextView) view.findViewById(R.id.childQuality)).setText(faceProperties.getValue());
-        ((TextView) view.findViewById(R.id.accuracy)).setText(faceProperties.getConfidence()*100 + "%");
+        String confidence = faceProperties.getConfidence() * 100 + "%";
+        ((TextView) view.findViewById(R.id.accuracy)).setText(confidence);
         return view;
     }
 

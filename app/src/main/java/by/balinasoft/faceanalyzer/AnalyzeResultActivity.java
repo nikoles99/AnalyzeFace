@@ -3,8 +3,11 @@ package by.balinasoft.faceanalyzer;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.gson.JsonObject;
 
@@ -21,12 +24,7 @@ public class AnalyzeResultActivity extends AppCompatActivity {
 
     public static final String PHOTO = AppCompatActivity.class + "Photo";
 
-
-    private Bitmap bitmap;
-    private ExpandableListView listView;
-    private ImageView imageView;
-    private FaceAdapter faceAdapter;
-
+    private LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +38,23 @@ public class AnalyzeResultActivity extends AppCompatActivity {
 
         List<Face> faceList = (List<Face>) getIntent().getSerializableExtra(FACE_LIST);
 
-        listView = (ExpandableListView) findViewById(R.id.listView);
-        faceAdapter = new FaceAdapter(this, faceList);
-        listView.setAdapter(faceAdapter);
-        imageView = (ImageView) findViewById(R.id.photo);
-        bitmap = getIntent().getParcelableExtra(PHOTO);
+        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        createFacesListView(faceList);
+
+        ImageView imageView = (ImageView) findViewById(R.id.photo);
+        Bitmap bitmap = getIntent().getParcelableExtra(PHOTO);
         imageView.setImageBitmap(bitmap);
+    }
+
+    private void createFacesListView(List<Face> faceList) {
+        for (Face face : faceList) {
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            ExpandableListView listView = new ExpandableListView(this);
+            FaceAdapter faceAdapter = new FaceAdapter(this, face);
+            listView.setAdapter(faceAdapter);
+            linearLayout.addView(listView, layoutParams);
+        }
     }
 }
