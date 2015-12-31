@@ -29,8 +29,8 @@
     <LinearLayout
         android:id="@+id/analyzeLayout"
         android:layout_width="wrap_content"
-        android:layout_below="@+id/logotype"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/logotype"
         android:layout_centerVertical="true"
         android:orientation="vertical">
 
@@ -63,37 +63,51 @@
             android:layout_marginTop="40dp"
             android:clickable="true">
 
-            <ImageView
-                android:id="@+id/termsOfUse"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/document"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/termOfUseTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/termsOfUse"
-                android:layout_marginTop="5dp"
-                android:gravity="center"/>
+                <ImageView
+                    android:id="@+id/termsOfUse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/document"/>
 
-            <ImageView
-                android:id="@+id/statistic"
+                <TextView
+                    android:id="@+id/termOfUseTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/statistick"/>
-
-            <TextView
-                android:id="@+id/statisticTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/statistic"
                 android:layout_centerHorizontal="true"
-                android:layout_marginRight="10dp"/>
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/statistic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/statistick"/>
+
+                <TextView
+                    android:id="@+id/statisticTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
 
         </RelativeLayout>
 
