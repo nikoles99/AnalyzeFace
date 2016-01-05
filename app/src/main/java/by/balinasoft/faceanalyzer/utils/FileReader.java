@@ -22,7 +22,7 @@ public class FileReader {
             is.close();
             return new String(buffer, ENCODING);
         } catch (IOException e) {
-            throw new IllegalStateException(String.format("Invalid Task format %s", fileName), e);
+            throw new IllegalStateException(String.format("Invalid String format %s", fileName), e);
         }
     }
 

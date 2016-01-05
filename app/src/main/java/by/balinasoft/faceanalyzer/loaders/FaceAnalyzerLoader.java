@@ -12,11 +12,11 @@ import retrofit.Retrofit;
 
 abstract public class FaceAnalyzerLoader<T> {
 
-    private ServerObserver serverObserver;
+    private ServerObserver<JsonObject, String> serverObserver;
 
     abstract protected Call<JsonObject> getRequestParams(MessageService service, T param);
 
-    public void setServerObserver(ServerObserver serverObserver) {
+    public void setServerObserver(ServerObserver<JsonObject, String> serverObserver) {
         this.serverObserver = serverObserver;
     }
 

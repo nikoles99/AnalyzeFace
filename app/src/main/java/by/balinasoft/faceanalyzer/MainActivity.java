@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.setNeutralButton("Later", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                return;
             }
         });
         dialog.show();

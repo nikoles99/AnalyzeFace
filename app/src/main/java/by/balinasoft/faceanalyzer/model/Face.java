@@ -14,6 +14,7 @@ public class Face implements Serializable {
     private List<FaceProperties> faceProperties;
 
     private List<FaceProperties> qualitiesCharacter = new ArrayList<>();
+
     private List<FaceProperties> qualitiesRelationship = new ArrayList<>();
 
     public List<FaceProperties> getFaceProperties() {

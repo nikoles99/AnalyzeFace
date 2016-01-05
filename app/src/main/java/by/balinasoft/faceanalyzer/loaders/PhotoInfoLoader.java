@@ -7,7 +7,7 @@ import retrofit.Call;
 
 public class PhotoInfoLoader extends FaceAnalyzerLoader<JsonObject>{
 
-    private static final String URL = "service_json.svc/GetImageInfo";
+    private static final String URL = "GetImageInfo";
 
     @Override
     protected Call<JsonObject> getRequestParams(MessageService service, JsonObject param) {

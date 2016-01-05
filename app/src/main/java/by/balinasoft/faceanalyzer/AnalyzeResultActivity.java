@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.google.gson.JsonObject;
 

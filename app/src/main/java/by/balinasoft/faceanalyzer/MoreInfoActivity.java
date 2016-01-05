@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
-import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.model.Face;
 import by.balinasoft.faceanalyzer.model.FaceProperties;
 

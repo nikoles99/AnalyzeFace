@@ -2,11 +2,11 @@ package by.balinasoft.faceanalyzer.constants;
 
 public class Constants {
 
-    public static final String URL = "http://betafaceapi.com/";
+    public static final String URL = "http://betafaceapi.com/service_json.svc/";
 
-    public static final int CONNECT_TIMEOUT = 2000;
-    public static final int WRITE_TIMEOUT = 2000;
-    public static final int TIMEOUT = 2000;
+    public static final int CONNECT_TIMEOUT = 120;
+    public static final int WRITE_TIMEOUT = 120;
+    public static final int TIMEOUT = 500;
 
     public static final String RUSSIAN_LANGUAGE = "русский";
 
@@ -18,7 +18,7 @@ public class Constants {
 
     public static final String DETECTION_FLAGS = "detection_flags";
 
-    public static final String IMAGE_FILE_DATA = "imagefile_data";
+    public static final String IMAGE_BASE64 = "image_base64";
 
     public static final String ORIGINAL_FILENAME = "original_filename";
 
@@ -27,8 +27,6 @@ public class Constants {
     public static final String FLAG = "extended";
 
     public static final String IMAGE_UID = "img_uid";
-
-    public static final String TAG_TAGS = "tags";
 
     public static final String FACE_PROPERTIES_CONFIDENCE = "confidence";
 
