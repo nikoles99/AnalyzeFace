@@ -1,7 +1,6 @@
 package by.balinasoft.faceanalyzer;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.List;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.loaders.FaceAnalyzerLoader;
 import by.balinasoft.faceanalyzer.loaders.PhotoInfoLoader;
+import by.balinasoft.faceanalyzer.loaders.PhotoUidLoader;
 import by.balinasoft.faceanalyzer.model.Face;
 import by.balinasoft.faceanalyzer.model.FaceProperties;
 import by.balinasoft.faceanalyzer.utils.PhotoFormatUtility;
@@ -113,8 +112,7 @@ public class AnalyzeActivity extends AppCompatActivity
 
     private void analyze(Bitmap image, String flag) {
         if (image != null) {
-            getFaceInfo("c1546a5d-0976-4988-a557-3bfded74182e");
-            //new PhotoExecutor(flag).execute(image);
+            getPhotoUid(image, flag);
         } else {
             showMessage(MAKE_PHOTO);
         }
@@ -135,17 +133,18 @@ public class AnalyzeActivity extends AppCompatActivity
         return (Bitmap) extras.get(DATA);
     }
 
+
     private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-/*    private void getPhotoUid(Bitmap bitmap, String flag) {
+    private void getPhotoUid(Bitmap bitmap, String flag) {
         String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
-        String jsonObject = PhotoFormatUtility.toXml(base64Photo, flag);
+        JsonObject jsonObject = PhotoFormatUtility.prepareJsonImageUid(base64Photo, flag);
         FaceAnalyzerLoader<JsonObject> analyzerLoader = new PhotoUidLoader();
         analyzerLoader.setServerObserver(this);
         analyzerLoader.makeRequest(jsonObject);
-    }*/
+    }
 
     private void getFaceInfo(String photoUid) {
         FaceAnalyzerLoader<JsonObject> analyzerLoader = new PhotoInfoLoader();
@@ -154,38 +153,10 @@ public class AnalyzeActivity extends AppCompatActivity
         analyzerLoader.makeRequest(jsonObject);
     }
 
-    @Override
-    public void successExecute(JsonObject jsonObject) {
-        if (jsonObject != null) {
-            handleResponse(jsonObject);
-        } else {
-            showMessage(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
-        }
-    }
-
-    @Override
-    public void failedExecute(String errorMessage) {
-        showMessage(errorMessage);
-    }
-
-
-    private void handleResponse(JsonObject jsonObject) {
-        String status = jsonObject.get(Constants.RESPONSE).getAsString();
-
-        if (status.equals(RESPONSE_OK)) {
-            JsonArray faces = jsonObject.getAsJsonArray(Constants.FACES);
-            List<Face> serverFaceList = new Gson().fromJson(faces, new TypeToken<List<Face>>() {
-            }.getType());
-            showHumanQuality((Serializable) localFaceListAnalyze(serverFaceList));
-        } else {
-            showMessage(status);
-        }
-    }
-
     private void showHumanQuality(Serializable faceList) {
         Intent intent = new Intent(AnalyzeActivity.this, AnalyzeResultActivity.class);
         intent.putExtra(AnalyzeResultActivity.FACE_LIST, faceList);
-        intent.putExtra(AnalyzeResultActivity.PHOTO, image);
+       // intent.putExtra(AnalyzeResultActivity.PHOTO, image);
         startActivity(intent);
     }
 
@@ -229,54 +200,37 @@ public class AnalyzeActivity extends AppCompatActivity
         }
     }
 
+    private void handleResponse(JsonObject jsonObject) {
+        String status = jsonObject.get(Constants.RESPONSE).getAsString();
 
-    public class PhotoExecutor extends AsyncTask<Bitmap, Void, String> {
-
-        private static final String URL_REQUEST_UID = "http://www.betafaceapi.com/service.svc/" +
-                "UploadNewImage_File";
-
-        private Exception exception;
-
-        private String FLAG;
-
-        public PhotoExecutor(String FLAG) {
-            this.FLAG = FLAG;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(Bitmap... bitmaps) {
-            try {
-                for (Bitmap bitmap : bitmaps) {
-                    return getPhotoUid(bitmap, FLAG);
-                }
-            } catch (IOException e) {
-                exception = e;
+        if (status.equals(RESPONSE_OK)) {
+            if (jsonObject.get("faces") != null) {
+                JsonArray faces = jsonObject.getAsJsonArray(Constants.FACES);
+                List<Face> serverFaceList = new Gson().fromJson(faces, new TypeToken<List<Face>>() {
+                }.getType());
+                showHumanQuality((Serializable) localFaceListAnalyze(serverFaceList));
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String uid) {
-            super.onPostExecute(uid);
-
-            if (exception == null || !uid.isEmpty()) {
-                getFaceInfo(uid);
-            } else {
-                showMessage(exception.getMessage());
+            else {
+                String faceUid = jsonObject.get(Constants.FACE_UID).getAsString();
+                getFaceInfo(faceUid);
             }
-        }
-
-        private String getPhotoUid(Bitmap bitmap, String flag) throws IOException {
-            String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
-            byte[] bytes = PhotoFormatUtility.base64Decode(base64Photo);
-            String xmlRequest = PhotoFormatUtility.toXml(base64Photo, flag);
-            InputStream response = new ApiConnector(URL_REQUEST_UID).makeXmlRequest(xmlRequest);
-            return PhotoFormatUtility.parse(response);
+        } else {
+            showMessage(status);
         }
     }
+
+    @Override
+    public void successExecute(JsonObject jsonObject) {
+        if (jsonObject != null) {
+            handleResponse(jsonObject);
+        } else {
+            showMessage(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
+        }
+    }
+
+    @Override
+    public void failedExecute(String errorMessage) {
+        showMessage(errorMessage);
+    }
+
 }

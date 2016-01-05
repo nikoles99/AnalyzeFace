@@ -39,7 +39,7 @@ public class Constants {
     public static final String FACES = "faces";
 
     public static final String FACE_PROPERTIES = "tags";
-    public static final String FACE_UID = "uid";
+    public static final String FACE_UID = "img_uid";
 
     public static final String ENGLISH_TERMS_OF_USE = "EULA-en.html";
     public static final String RUSSIAN_TERMS_OF_USE = "EULA-ru.html";
