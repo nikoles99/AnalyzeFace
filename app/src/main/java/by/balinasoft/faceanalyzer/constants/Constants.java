@@ -4,9 +4,9 @@ public class Constants {
 
     public static final String URL = "http://betafaceapi.com/service_json.svc/";
 
-    public static final int CONNECT_TIMEOUT = 120;
-    public static final int WRITE_TIMEOUT = 120;
-    public static final int TIMEOUT = 500;
+    public static final int CONNECT_TIMEOUT = 60000;
+    public static final int WRITE_TIMEOUT = 60000;
+    public static final int TIMEOUT = 60000;
 
     public static final String RUSSIAN_LANGUAGE = "русский";
 
@@ -75,4 +75,9 @@ public class Constants {
     public static final String SOCIAL_RELATIONS = "SocialRelations";
     public static final String RESULT = "Result";
     public static final String RESPONSE = "string_response";
+
+    public static final String RESPONSE_CODE = "int_response";
+    public static final String RESPONSE_STATUS = "string_response";
+    public static final String CHECKSUM = "checksum";
+    public static final String UID = "uid";
 }

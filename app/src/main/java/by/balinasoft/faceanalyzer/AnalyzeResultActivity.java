@@ -16,6 +16,7 @@ import java.util.List;
 import by.balinasoft.faceanalyzer.adapters.FaceAdapter;
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.model.Face;
+import by.balinasoft.faceanalyzer.utils.PhotoFormatUtility;
 
 public class AnalyzeResultActivity extends AppCompatActivity {
 
@@ -41,8 +42,8 @@ public class AnalyzeResultActivity extends AppCompatActivity {
         createFacesListView(faceList);
 
         ImageView imageView = (ImageView) findViewById(R.id.photo);
-        Bitmap bitmap = getIntent().getParcelableExtra(PHOTO);
-        imageView.setImageBitmap(bitmap);
+        String image_base64 = getIntent().getStringExtra(PHOTO);
+        imageView.setImageBitmap(PhotoFormatUtility.stringToBitmap(image_base64));
     }
 
     private void createFacesListView(List<Face> faceList) {

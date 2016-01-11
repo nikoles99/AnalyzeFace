@@ -11,7 +11,7 @@ import by.balinasoft.faceanalyzer.constants.Constants;
 public class Face implements Serializable {
 
     @SerializedName(Constants.FACE_PROPERTIES)
-    private List<FaceProperties> faceProperties;
+    private List<FaceProperties> faceProperties = new ArrayList<>();
 
     private List<FaceProperties> qualitiesCharacter = new ArrayList<>();
 
@@ -22,11 +22,7 @@ public class Face implements Serializable {
     }
 
     public void addProperty(FaceProperties property) {
-        if (faceProperties == null) {
-            faceProperties = new ArrayList<>();
-        } else {
-            faceProperties.add(property);
-        }
+        faceProperties.add(property);
     }
 
     public List<FaceProperties> getQualitiesList(String quality) {

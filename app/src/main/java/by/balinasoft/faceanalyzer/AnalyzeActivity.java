@@ -12,7 +12,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,15 +24,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.loaders.FaceAnalyzerLoader;
-import by.balinasoft.faceanalyzer.loaders.PhotoInfoLoader;
-import by.balinasoft.faceanalyzer.loaders.PhotoUidLoader;
+import by.balinasoft.faceanalyzer.loaders.GetImageInfoLoader;
+import by.balinasoft.faceanalyzer.loaders.UploadImageLoader;
 import by.balinasoft.faceanalyzer.model.Face;
 import by.balinasoft.faceanalyzer.model.FaceProperties;
+import by.balinasoft.faceanalyzer.model.GetImageInfoRequest;
+import by.balinasoft.faceanalyzer.model.GetImageInfoResponse;
+import by.balinasoft.faceanalyzer.model.UploadImageRequest;
+import by.balinasoft.faceanalyzer.model.UploadImageResponse;
 import by.balinasoft.faceanalyzer.utils.PhotoFormatUtility;
 import by.balinasoft.faceanalyzer.utils.ServerObserver;
 
@@ -45,14 +54,23 @@ public class AnalyzeActivity extends AppCompatActivity
     public static final String ANALYZE_TYPE = "extended";
     public static final String RESPONSE_OK = "ok";
 
-    private Bitmap image;
+    private ImageView makePhoto;
+    private ImageView openGallery;
+    private ProgressBar progressBar;
+    private RelativeLayout loadingLayout;
+
+    private String base64Photo;
     private JsonObject mappingTable;
     private JsonObject language;
+    private int i = 0;
+    String sdsd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         language = ((FaceAnalyzerApplication) getApplicationContext()).getAppLanguage();
         mappingTable = ((FaceAnalyzerApplication) getApplicationContext()).getMappingTable();
@@ -65,8 +83,10 @@ public class AnalyzeActivity extends AppCompatActivity
         String loadFromGalleryTitle = language.get(Constants.CHOOSE_FROM_GALLERY).getAsString();
         ((TextView) findViewById(R.id.loadFromGalleryTitle)).setText(loadFromGalleryTitle);
 
-        ImageView makePhoto = (ImageView)
-                findViewById(R.id.makePhoto);
+        loadingLayout = (RelativeLayout) findViewById(R.id.loadingLayout);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        makePhoto = (ImageView)findViewById(R.id.makePhoto);
         makePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,7 +94,15 @@ public class AnalyzeActivity extends AppCompatActivity
             }
         });
 
-        ImageView openGallery = (ImageView) findViewById(R.id.loadFromGallery);
+        Button button = (Button)findViewById(R.id.sdsd);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFaceInfo(sdsd);
+            }
+        });
+
+        openGallery = (ImageView) findViewById(R.id.loadFromGallery);
         openGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,10 +122,18 @@ public class AnalyzeActivity extends AppCompatActivity
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
 
+    private void setViewEnable(boolean enable) {
+        progressBar.setVisibility(enable ? View.GONE : View.VISIBLE);
+        loadingLayout.setVisibility(enable ? View.GONE : View.VISIBLE);
+        makePhoto.setEnabled(enable);
+        openGallery.setEnabled(enable);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            Bitmap image = null;
+
             switch (requestCode) {
                 case REQUEST_IMAGE_CAMERA:
                     image = getImageFromCamera(data);
@@ -113,6 +149,7 @@ public class AnalyzeActivity extends AppCompatActivity
     private void analyze(Bitmap image, String flag) {
         if (image != null) {
             getPhotoUid(image, flag);
+            setViewEnable(false);
         } else {
             showMessage(MAKE_PHOTO);
         }
@@ -139,24 +176,29 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
     private void getPhotoUid(Bitmap bitmap, String flag) {
-        String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
-        JsonObject jsonObject = PhotoFormatUtility.prepareJsonImageUid(base64Photo, flag);
-        FaceAnalyzerLoader<JsonObject> analyzerLoader = new PhotoUidLoader();
+        base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
+        UploadImageRequest request = new UploadImageRequest();
+        request.setImageBase64(base64Photo);
+        FaceAnalyzerLoader<JsonObject> analyzerLoader = new UploadImageLoader();
         analyzerLoader.setServerObserver(this);
+        JsonObject jsonObject = new JsonParser().parse(new Gson().toJson(request)).getAsJsonObject();
         analyzerLoader.makeRequest(jsonObject);
     }
 
     private void getFaceInfo(String photoUid) {
-        FaceAnalyzerLoader<JsonObject> analyzerLoader = new PhotoInfoLoader();
+        setViewEnable(false);
+        FaceAnalyzerLoader<JsonObject> analyzerLoader = new GetImageInfoLoader();
         analyzerLoader.setServerObserver(this);
-        JsonObject jsonObject = PhotoFormatUtility.prepareJsonImageInfo(photoUid);
+        GetImageInfoRequest request = new GetImageInfoRequest();
+        request.setImageUid(photoUid);
+        JsonObject jsonObject = new JsonParser().parse(new Gson().toJson(request)).getAsJsonObject();
         analyzerLoader.makeRequest(jsonObject);
     }
 
-    private void showHumanQuality(Serializable faceList) {
+    private void showHumanQuality(List<Face> faceList) {
         Intent intent = new Intent(AnalyzeActivity.this, AnalyzeResultActivity.class);
-        intent.putExtra(AnalyzeResultActivity.FACE_LIST, faceList);
-       // intent.putExtra(AnalyzeResultActivity.PHOTO, image);
+        intent.putExtra(AnalyzeResultActivity.FACE_LIST, (Serializable) faceList);
+        intent.putExtra(AnalyzeResultActivity.PHOTO, base64Photo);
         startActivity(intent);
     }
 
@@ -203,19 +245,28 @@ public class AnalyzeActivity extends AppCompatActivity
     private void handleResponse(JsonObject jsonObject) {
         String status = jsonObject.get(Constants.RESPONSE).getAsString();
 
-        if (status.equals(RESPONSE_OK)) {
-            if (jsonObject.get("faces") != null) {
-                JsonArray faces = jsonObject.getAsJsonArray(Constants.FACES);
-                List<Face> serverFaceList = new Gson().fromJson(faces, new TypeToken<List<Face>>() {
-                }.getType());
-                showHumanQuality((Serializable) localFaceListAnalyze(serverFaceList));
-            }
-            else {
-                String faceUid = jsonObject.get(Constants.FACE_UID).getAsString();
-                getFaceInfo(faceUid);
-            }
-        } else {
-            showMessage(status);
+        switch (status) {
+            case RESPONSE_OK:
+                if (jsonObject.get(Constants.FACES) != null) {
+                    GetImageInfoResponse getImageInfoResponse = new Gson().
+                            fromJson(jsonObject, new TypeToken<GetImageInfoResponse>() {
+                            }.getType());
+                    showHumanQuality(localFaceListAnalyze(getImageInfoResponse.getFaces()));
+                } else {
+                    UploadImageResponse uploadImageResponse = new Gson().
+                            fromJson(jsonObject, new TypeToken<UploadImageResponse>() {
+                            }.getType());
+                    getFaceInfo(uploadImageResponse.getImageUid());
+                }
+                break;
+            case "Request is in the queue":
+                showMessage(i++ + "");
+                sdsd= jsonObject.get(Constants.UID).getAsString();
+
+                break;
+            default:
+                showMessage(status);
+                break;
         }
     }
 
@@ -226,11 +277,12 @@ public class AnalyzeActivity extends AppCompatActivity
         } else {
             showMessage(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
         }
+        setViewEnable(true);
     }
 
     @Override
     public void failedExecute(String errorMessage) {
         showMessage(errorMessage);
+        setViewEnable(true);
     }
-
 }
