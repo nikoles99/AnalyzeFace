@@ -1,6 +1,7 @@
 package by.balinasoft.faceanalyzer;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +9,10 @@ import java.util.List;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -28,6 +31,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 
+import org.json.JSONObject;
+
+import by.balinasoft.faceanalyzer.adapters.FaceAdapter;
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.loaders.FaceAnalyzerLoader;
 import by.balinasoft.faceanalyzer.loaders.GetImageInfoLoader;
@@ -154,6 +160,14 @@ public class AnalyzeActivity extends AppCompatActivity
             showMessage(MAKE_PHOTO);
         }
     }
+
+/*    private void analyze(Bitmap image, String FLAG) {
+        if (image != null) {
+            new PhotoExecutor(FLAG).execute(image);
+        } else {
+            showMessage(MAKE_PHOTO);
+        }
+    }*/
 
     private Bitmap getImageFromGallery(Intent data) {
         try {
@@ -284,5 +298,90 @@ public class AnalyzeActivity extends AppCompatActivity
     public void failedExecute(String errorMessage) {
         showMessage(errorMessage);
         setViewEnable(true);
+    }
+
+
+
+    public class PhotoExecutor extends AsyncTask<Bitmap, Void, JSONObject> {
+
+        private static final String URL_REQUEST_UID = "http://betafaceapi.com/service_json." +
+                "svc/UploadImage";
+        private static final String URL_REQUEST_IMG_INFO = "http://betafaceapi.com/service_json." +
+                "svc/GetImageInfo";
+
+        private Exception exception;
+
+        private String FLAG;
+
+        public PhotoExecutor(String FLAG) {
+            this.FLAG = FLAG;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected JSONObject doInBackground(Bitmap... bitmaps) {
+            try {
+                for (Bitmap bitmap : bitmaps) {
+                    return getFaceInfo(bitmap, FLAG);
+                }
+            } catch (IOException e) {
+                exception = e;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            progressBar.setVisibility(View.GONE);
+
+            if (exception == null || jsonObject != null) {
+                List<Face> list = PhotoFormatUtility.parse(jsonObject);
+
+                if (FLAG.isEmpty()) {
+                    checkFaces(list);
+                } else {
+                    Intent intent = new Intent(AnalyzeActivity.this, MoreInfoActivity.class);
+                    startActivity(intent);
+                }
+            } else {
+                showMessage(exception.getMessage());
+            }
+        }
+
+        private JSONObject getFaceInfo(Bitmap bitmap, String flag) throws IOException {
+            String photoUid = getPhotoUid(bitmap, flag);
+            try {
+                Thread.sleep(6000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            final JSONObject face = getPhotoInfo(photoUid);
+            PhotoFormatUtility.checkJson(face);
+            return face;
+        }
+
+        private JSONObject getPhotoInfo(String imgUid) throws IOException {
+            JSONObject jsonObject = PhotoFormatUtility.prepareJsonImageInfo(imgUid);
+            return new ApiConnector(URL_REQUEST_IMG_INFO).makeJsonRequest(jsonObject);
+        }
+
+        private String getPhotoUid(Bitmap bitmap, String flag) throws IOException {
+            String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
+            JSONObject xmlRequest = PhotoFormatUtility.toXml(base64Photo, flag);
+            JSONObject response = new ApiConnector(URL_REQUEST_UID).makeJsonRequest(xmlRequest);
+            return PhotoFormatUtility.parses(response);
+        }
+
+        private void checkFaces(List<Face> list) {
+            if (list.isEmpty()) {
+                showMessage("Photo doesn't contain faces");
+            }
+        }
     }
 }
