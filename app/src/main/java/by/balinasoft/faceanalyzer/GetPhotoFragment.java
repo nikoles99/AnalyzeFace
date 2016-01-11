@@ -34,7 +34,6 @@ public class GetPhotoFragment extends Fragment {
         makePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
                 observer.notifyListener(Constants.MAKE_PHOTO);
             }
         });
@@ -44,7 +43,6 @@ public class GetPhotoFragment extends Fragment {
         loadFromGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
                 observer.notifyListener(Constants.LOAD_FROM_GALLERY);
             }
         });

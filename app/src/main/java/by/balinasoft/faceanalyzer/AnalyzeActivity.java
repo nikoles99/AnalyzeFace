@@ -35,15 +35,15 @@ import by.balinasoft.faceanalyzer.model.GetImageInfoRequest;
 import by.balinasoft.faceanalyzer.model.GetImageInfoResponse;
 import by.balinasoft.faceanalyzer.model.UploadImageRequest;
 import by.balinasoft.faceanalyzer.model.UploadImageResponse;
-import by.balinasoft.faceanalyzer.utils.FaceAnalyzerObserver;
 import by.balinasoft.faceanalyzer.utils.PhotoFormatUtility;
 import by.balinasoft.faceanalyzer.utils.ServerObserver;
 
 public class AnalyzeActivity extends AppCompatActivity
-        implements ServerObserver<JsonObject, String>, FaceAnalyzerObserver {
+        implements ServerObserver<JsonObject, String> {
 
     private static final int REQUEST_IMAGE_CAMERA = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
+    private static final int REQUEST_FACE_QUALITIES = 3;
 
     private static final String TYPE = "image/*";
     private static final String MAKE_PHOTO = "Please select image or make photo on camera";
@@ -121,17 +121,29 @@ public class AnalyzeActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            Bitmap image = null;
 
             switch (requestCode) {
                 case REQUEST_IMAGE_CAMERA:
-                    image = getImageFromCamera(data);
+                    analyze(getImageFromCamera(data), ANALYZE_TYPE);
                     break;
                 case REQUEST_IMAGE_GALLERY:
-                    image = getImageFromGallery(data);
+                    analyze(getImageFromGallery(data), ANALYZE_TYPE);
+                    break;
+                case REQUEST_FACE_QUALITIES:
+                    handleResponse(data);
                     break;
             }
-            analyze(image, ANALYZE_TYPE);
+        }
+    }
+
+    private void handleResponse(Intent data) {
+        switch (data.getStringExtra(AnalyzeResultActivity.GET_PHOTO_MODE)) {
+            case Constants.MAKE_PHOTO:
+                openCamera();
+                break;
+            case Constants.LOAD_FROM_GALLERY:
+                openGallery();
+                break;
         }
     }
 
@@ -158,7 +170,6 @@ public class AnalyzeActivity extends AppCompatActivity
         Bundle extras = data.getExtras();
         return (Bitmap) extras.get(DATA);
     }
-
 
     private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -187,7 +198,7 @@ public class AnalyzeActivity extends AppCompatActivity
         Intent intent = new Intent(AnalyzeActivity.this, AnalyzeResultActivity.class);
         intent.putExtra(AnalyzeResultActivity.FACE_LIST, (Serializable) faceList);
         intent.putExtra(AnalyzeResultActivity.PHOTO, base64Photo);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_FACE_QUALITIES);
     }
 
     private List<Face> localFaceListAnalyze(List<Face> serverFaceList) {
@@ -239,7 +250,7 @@ public class AnalyzeActivity extends AppCompatActivity
                     GetImageInfoResponse getImageInfoResponse = new Gson().
                             fromJson(jsonObject, new TypeToken<GetImageInfoResponse>() {
                             }.getType());
-                    showHumanQuality(null);
+                    showHumanQuality(localFaceListAnalyze(getImageInfoResponse.getFaces()));
                 } else {
                     UploadImageResponse uploadImageResponse = new Gson().
                             fromJson(jsonObject, new TypeToken<UploadImageResponse>() {
@@ -270,17 +281,5 @@ public class AnalyzeActivity extends AppCompatActivity
     public void failedExecute(String errorMessage) {
         showMessage(errorMessage);
         setViewEnable(true);
-    }
-
-    @Override
-    public void notifyListener(String flag) {
-        switch (flag) {
-            case Constants.MAKE_PHOTO:
-                openCamera();
-                break;
-            case Constants.LOAD_FROM_GALLERY:
-                openGallery();
-                break;
-        }
     }
 }
