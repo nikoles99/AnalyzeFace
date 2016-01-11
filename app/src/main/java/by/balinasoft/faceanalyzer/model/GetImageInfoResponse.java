@@ -24,23 +24,8 @@ public class GetImageInfoResponse {
     @SerializedName(Constants.UID)
     private String uid;
 
-    public String getChecksum() {
-        return checksum;
-    }
-
     public List<Face> getFaces() {
         return faces;
     }
 
-    public String getResponseCode() {
-        return responseCode;
-    }
-
-    public String getResponseStatus() {
-        return responseStatus;
-    }
-
-    public String getUid() {
-        return uid;
-    }
 }

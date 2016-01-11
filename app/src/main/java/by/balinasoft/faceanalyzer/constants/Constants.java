@@ -80,4 +80,6 @@ public class Constants {
     public static final String RESPONSE_STATUS = "string_response";
     public static final String CHECKSUM = "checksum";
     public static final String UID = "uid";
+    public static final String MAKE_PHOTO = "makePhoto";
+    public static final String LOAD_FROM_GALLERY = "loadFromGallery";
 }

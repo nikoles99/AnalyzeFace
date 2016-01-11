@@ -13,7 +13,7 @@ public class UploadImageRequest {
     private String secret = Constants.SECRET;
 
     @SerializedName(Constants.DETECTION_FLAGS)
-    private String detectionFlag = Constants.FLAG;
+    private String detectionFlag;
 
     @SerializedName(Constants.IMAGE_BASE64)
     private String imageBase64;
@@ -25,23 +25,7 @@ public class UploadImageRequest {
         this.imageBase64 = imageBase64;
     }
 
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public String getDetectionFlag() {
-        return detectionFlag;
-    }
-
-    public String getImageBase64() {
-        return imageBase64;
-    }
-
-    public String getFileName() {
-        return fileName;
+    public void setDetectionFlag(String detectionFlag) {
+        this.detectionFlag = detectionFlag;
     }
 }

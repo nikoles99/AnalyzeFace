@@ -15,18 +15,6 @@ public class GetImageInfoRequest {
     @SerializedName(Constants.IMAGE_UID)
     private String imageUid;
 
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public String getImageUid() {
-        return imageUid;
-    }
-
     public void setImageUid(String imageUid) {
         this.imageUid = imageUid;
     }
