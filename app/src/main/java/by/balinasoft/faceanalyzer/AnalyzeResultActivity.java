@@ -1,6 +1,7 @@
 package by.balinasoft.faceanalyzer;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -56,8 +57,8 @@ public class AnalyzeResultActivity extends AppCompatActivity implements FaceAnal
         createFacesListView(faceList);
 
         ImageView imageView = (ImageView) findViewById(R.id.photo);
-        String image_base64 = getIntent().getStringExtra(PHOTO);
-        imageView.setImageBitmap(PhotoFormatUtility.stringToBitmap(image_base64));
+        Bitmap photo = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
+        imageView.setImageBitmap(photo);
 
         getPhotoFragment = new GetPhotoFragment();
         getPhotoFragment.setObserver(this);

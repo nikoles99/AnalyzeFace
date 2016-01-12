@@ -81,7 +81,7 @@
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.6"
+        android:alpha="0.7"
         android:background="@color/material_grey_600"
         android:visibility="gone">
 
@@ -90,7 +90,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
             android:indeterminate="false"
             android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progressBar"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="25dp"
+            android:visibility="gone"/>
+
+
+        <Button
+            android:id="@+id/retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/message"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/retry"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"/>
     </RelativeLayout>
+
 </RelativeLayout>

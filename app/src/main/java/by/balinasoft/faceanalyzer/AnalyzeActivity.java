@@ -7,12 +7,15 @@ import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -58,9 +61,15 @@ public class AnalyzeActivity extends AppCompatActivity
     private ProgressBar progressBar;
     private RelativeLayout loadingLayout;
 
-    private String base64Photo;
+    private Bitmap photo;
+
     private JsonObject mappingTable;
     private JsonObject language;
+
+    private Button retry;
+    private Button cancel;
+
+    private TextView message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +91,27 @@ public class AnalyzeActivity extends AppCompatActivity
 
         loadingLayout = (RelativeLayout) findViewById(R.id.loadingLayout);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+
+        message = (TextView) findViewById(R.id.message);
+
+        cancel = (Button) findViewById(R.id.cancel);
+        cancel.setText(language.get(Constants.CANCEL).getAsString());
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        retry = (Button) findViewById(R.id.retry);
+        retry.setText(language.get(Constants.RETRY).getAsString());
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                analyze(photo, ANALYZE_TYPE);
+            }
+        });
 
         makePhoto = (ImageView) findViewById(R.id.makePhoto);
         makePhoto.setOnClickListener(new View.OnClickListener() {
@@ -111,23 +141,30 @@ public class AnalyzeActivity extends AppCompatActivity
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
 
-    private void setViewEnable(boolean enable) {
-        progressBar.setVisibility(enable ? View.GONE : View.VISIBLE);
+    private void setLoadingLayoutVisibility(boolean enable) {
         loadingLayout.setVisibility(enable ? View.GONE : View.VISIBLE);
+        message.setVisibility(enable ? View.GONE : View.VISIBLE);
         makePhoto.setEnabled(enable);
         openGallery.setEnabled(enable);
+    }
+
+    private void setProgressFormVisibility(boolean enable) {
+        progressBar.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+        retry.setVisibility(enable ? View.GONE : View.VISIBLE);
+        cancel.setVisibility(enable ? View.GONE : View.VISIBLE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-
             switch (requestCode) {
                 case REQUEST_IMAGE_CAMERA:
-                    analyze(getImageFromCamera(data), ANALYZE_TYPE);
+                    photo = getImageFromCamera(data);
+                    analyze(photo, ANALYZE_TYPE);
                     break;
                 case REQUEST_IMAGE_GALLERY:
-                    analyze(getImageFromGallery(data), ANALYZE_TYPE);
+                    photo = getImageFromGallery(data);
+                    analyze(photo, ANALYZE_TYPE);
                     break;
                 case REQUEST_FACE_QUALITIES:
                     handleResponse(data);
@@ -150,7 +187,10 @@ public class AnalyzeActivity extends AppCompatActivity
     private void analyze(Bitmap image, String flag) {
         if (image != null) {
             getPhotoUid(image, flag);
-            setViewEnable(false);
+            setLoadingLayoutVisibility(false);
+            setProgressFormVisibility(true);
+            message.setText(language.get(Constants.WAIT).getAsString() + "\n\n" +
+                    language.get(Constants.PHOTO_LOADING).getAsString());
         } else {
             showMessage(MAKE_PHOTO);
         }
@@ -176,7 +216,7 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
     private void getPhotoUid(Bitmap bitmap, String flag) {
-        base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
+        String base64Photo = PhotoFormatUtility.bitmapToString(bitmap);
         UploadImageRequest request = new UploadImageRequest();
         request.setImageBase64(base64Photo);
         request.setDetectionFlag(flag);
@@ -186,7 +226,6 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
     private void getFaceInfo(String photoUid) {
-        setViewEnable(false);
         FaceAnalyzerLoader<GetImageInfoRequest> analyzerLoader = new GetImageInfoLoader();
         analyzerLoader.setServerObserver(this);
         GetImageInfoRequest request = new GetImageInfoRequest();
@@ -195,13 +234,15 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
     private void showHumanQuality(List<Face> faceList) {
+        setLoadingLayoutVisibility(true);
         Intent intent = new Intent(AnalyzeActivity.this, AnalyzeResultActivity.class);
         intent.putExtra(AnalyzeResultActivity.FACE_LIST, (Serializable) faceList);
-        intent.putExtra(AnalyzeResultActivity.PHOTO, base64Photo);
+        intent.putExtra(Intent.EXTRA_INTENT, photo);
         startActivityForResult(intent, REQUEST_FACE_QUALITIES);
     }
 
     private List<Face> localFaceListAnalyze(List<Face> serverFaceList) {
+        message.setText(language.get(Constants.ANALYSING).getAsString());
         List<Face> localFaceList = new ArrayList<>();
 
         for (Face serverFace : serverFaceList) {
@@ -224,7 +265,6 @@ public class AnalyzeActivity extends AppCompatActivity
 
         if (nameProperty != null) {
             JsonObject valueProperty = nameProperty.getAsJsonObject(serverFaceProperty.getValue());
-
             createProperty(Constants.CHARACTER, localFace, serverFaceProperty, valueProperty);
             createProperty(Constants.RALATIONSHIP, localFace, serverFaceProperty, valueProperty);
         }
@@ -232,12 +272,14 @@ public class AnalyzeActivity extends AppCompatActivity
 
     private void createProperty(String typeHumanQuality, Face localFace,
                                 FaceProperties serverFaceProperty, JsonObject valueProperty) {
-        JsonArray humanQualities = valueProperty.getAsJsonArray(typeHumanQuality);
+        if (valueProperty != null) {
+            JsonArray humanQualities = valueProperty.getAsJsonArray(typeHumanQuality);
 
-        for (JsonElement quality : humanQualities) {
-            FaceProperties localFaceProperty = new FaceProperties(serverFaceProperty.
-                    getConfidence(), typeHumanQuality, quality.getAsString());
-            localFace.addProperty(localFaceProperty);
+            for (JsonElement quality : humanQualities) {
+                FaceProperties localFaceProperty = new FaceProperties(serverFaceProperty.
+                        getConfidence(), typeHumanQuality, quality.getAsString());
+                localFace.addProperty(localFaceProperty);
+            }
         }
     }
 
@@ -250,7 +292,8 @@ public class AnalyzeActivity extends AppCompatActivity
                     GetImageInfoResponse getImageInfoResponse = new Gson().
                             fromJson(jsonObject, new TypeToken<GetImageInfoResponse>() {
                             }.getType());
-                    showHumanQuality(localFaceListAnalyze(getImageInfoResponse.getFaces()));
+                    List<Face> faces = localFaceListAnalyze(getImageInfoResponse.getFaces());
+                    showHumanQuality(faces);
                 } else {
                     UploadImageResponse uploadImageResponse = new Gson().
                             fromJson(jsonObject, new TypeToken<UploadImageResponse>() {
@@ -259,6 +302,7 @@ public class AnalyzeActivity extends AppCompatActivity
                 }
                 break;
             case REQUEST_IS_IN_THE_QUEUE:
+                showMessage(REQUEST_IS_IN_THE_QUEUE);
                 getFaceInfo(jsonObject.get(Constants.UID).getAsString());
                 break;
             default:
@@ -272,14 +316,14 @@ public class AnalyzeActivity extends AppCompatActivity
         if (jsonObject != null) {
             handleResponse(jsonObject);
         } else {
-            showMessage(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
+            message.setText(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
+            setProgressFormVisibility(false);
         }
-        setViewEnable(true);
     }
 
     @Override
     public void failedExecute(String errorMessage) {
-        showMessage(errorMessage);
-        setViewEnable(true);
+        message.setText(language.get(Constants.NO_CONNECTION).getAsString());
+        setProgressFormVisibility(false);
     }
 }
