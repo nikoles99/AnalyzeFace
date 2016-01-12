@@ -58,8 +58,8 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="40dp"
             android:clickable="true">
 
@@ -114,9 +114,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/shareTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/share"
+        android:layout_below="@+id/analyzeLayout"
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
 
@@ -147,6 +148,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_below="@+id/shareTitle"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"

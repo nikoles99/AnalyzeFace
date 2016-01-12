@@ -1,6 +1,6 @@
 {
   "RU": {
-    "Stats": "Статистика",
+    "Stats": "  Статистика",
     "ChooseFromGallery": "Выбрать из галереи",
     "Share": "Поделиться",
     "AnalysesResult": "Результаты анализа",
@@ -10,7 +10,7 @@
     "Menu": "Меню",
     "NumOfInitiatedAnalysis": "Начато анализов",
     "SuccessfullyCompleted": "Успешно  завершенных",
-    "EULA": "Условия использования",
+    "EULA": "Условия\n использования",
     "Failed": "Неуспешно завершенных",
     "Uploading": "Загрузка",
     "Analysing": "Распознавание",
@@ -23,8 +23,8 @@
     "SocialRelations": "Отношения с людьми",
     "Character": "Характер",
     "Result": "Результат",
-    "Wait":"ПОДОЖДИТЕ",
-    "PhotoLoading":"Фото загружается"
+    "Wait": "ПОДОЖДИТЕ",
+    "PhotoLoading": "Фото загружается..."
   },
   "EN": {
     "Stats": "Stats",
@@ -50,8 +50,8 @@
     "SocialRelations": "Social relations",
     "Character": "Character",
     "Result": "Result",
-    "Wait":"WAIT",
-    "PhotoLoading":"Photo is loading"
+    "Wait": "WAIT",
+    "PhotoLoading": "Photo is loading..."
   }
 }
 

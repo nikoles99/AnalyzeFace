@@ -15,7 +15,7 @@ public class StatisticActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
-        JsonObject language = ((FaceAnalyzerApplication)getApplicationContext()).getAppLanguage();
+        JsonObject language = ((FaceAnalyzerApplication) getApplicationContext()).getAppLanguage();
 
         String title = language.get(Constants.STATS).getAsString();
         getSupportActionBar().setTitle(title);
@@ -28,5 +28,20 @@ public class StatisticActivity extends AppCompatActivity {
 
         String failedAnalyses = language.get(Constants.FAILED_ANALYSES).getAsString();
         ((TextView) findViewById(R.id.failedAnalyses)).setText(failedAnalyses);
+
+        String failedAnalysesValue = getStatisticValue(Constants.FAILED_ANALYSES);
+        ((TextView) findViewById(R.id.failedAnalysesValue)).setText(failedAnalysesValue);
+
+        String successfullyAnalysesValue = getStatisticValue(Constants.SUCCESSFULLY_ANALYSES);
+        ((TextView) findViewById(R.id.successfullyAnalysesValue)).setText(successfullyAnalysesValue);
+
+        String startAnalyzesValue = getStatisticValue(Constants.NUM_OF_INITIATED_ANALYSIS);
+        ((TextView) findViewById(R.id.startAnalyzesValue)).setText(startAnalyzesValue);
+    }
+
+    private String getStatisticValue(String key) {
+        int statisticValue = ((FaceAnalyzerApplication) getApplicationContext()).
+                getStatisticValue(key);
+        return String.valueOf(statisticValue);
     }
 }

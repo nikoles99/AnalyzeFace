@@ -12,11 +12,11 @@ public class GetImageInfoLoader extends FaceAnalyzerLoader<GetImageInfoRequest>{
 
     @Override
     protected Call<JsonObject> getRequestParams(MessageService service, GetImageInfoRequest param) {
-        try {
+       /* try {
             Thread.sleep(6000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
         return service.getImageInfoRequest(URL, param);
     }
 }

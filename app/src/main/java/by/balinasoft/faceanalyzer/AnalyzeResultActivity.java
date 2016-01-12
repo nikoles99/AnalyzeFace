@@ -57,7 +57,8 @@ public class AnalyzeResultActivity extends AppCompatActivity implements FaceAnal
         createFacesListView(faceList);
 
         ImageView imageView = (ImageView) findViewById(R.id.photo);
-        Bitmap photo = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
+        String photoPath = getIntent().getStringExtra(PHOTO);
+        Bitmap photo = PhotoFormatUtility.loadImageFromStorage(photoPath);
         imageView.setImageBitmap(photo);
 
         getPhotoFragment = new GetPhotoFragment();

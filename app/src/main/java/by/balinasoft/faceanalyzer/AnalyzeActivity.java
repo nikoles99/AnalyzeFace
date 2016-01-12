@@ -154,6 +154,7 @@ public class AnalyzeActivity extends AppCompatActivity
         cancel.setVisibility(enable ? View.GONE : View.VISIBLE);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -189,7 +190,7 @@ public class AnalyzeActivity extends AppCompatActivity
             getPhotoUid(image, flag);
             setLoadingLayoutVisibility(false);
             setProgressFormVisibility(true);
-            message.setText(language.get(Constants.WAIT).getAsString() + "\n\n" +
+            message.setText(language.get(Constants.WAIT).getAsString() + "\n" +
                     language.get(Constants.PHOTO_LOADING).getAsString());
         } else {
             showMessage(MAKE_PHOTO);
@@ -234,10 +235,10 @@ public class AnalyzeActivity extends AppCompatActivity
     }
 
     private void showHumanQuality(List<Face> faceList) {
-        setLoadingLayoutVisibility(true);
         Intent intent = new Intent(AnalyzeActivity.this, AnalyzeResultActivity.class);
         intent.putExtra(AnalyzeResultActivity.FACE_LIST, (Serializable) faceList);
-        intent.putExtra(Intent.EXTRA_INTENT, photo);
+        String filePath = PhotoFormatUtility.savePhotoInStorage(photo, this);
+        intent.putExtra(AnalyzeResultActivity.PHOTO, filePath);
         startActivityForResult(intent, REQUEST_FACE_QUALITIES);
     }
 
@@ -270,6 +271,16 @@ public class AnalyzeActivity extends AppCompatActivity
         }
     }
 
+    private void updateStatisticAnalyzes(String typeAnalyze) {
+        FaceAnalyzerApplication application = ((FaceAnalyzerApplication) getApplicationContext());
+        int countAnalyzes = application.getStatisticValue(typeAnalyze);
+        application.saveStatisticValue(typeAnalyze, ++countAnalyzes);
+
+        if (!typeAnalyze.equals(Constants.NUM_OF_INITIATED_ANALYSIS)) {
+            updateStatisticAnalyzes(Constants.NUM_OF_INITIATED_ANALYSIS);
+        }
+    }
+
     private void createProperty(String typeHumanQuality, Face localFace,
                                 FaceProperties serverFaceProperty, JsonObject valueProperty) {
         if (valueProperty != null) {
@@ -292,8 +303,16 @@ public class AnalyzeActivity extends AppCompatActivity
                     GetImageInfoResponse getImageInfoResponse = new Gson().
                             fromJson(jsonObject, new TypeToken<GetImageInfoResponse>() {
                             }.getType());
-                    List<Face> faces = localFaceListAnalyze(getImageInfoResponse.getFaces());
-                    showHumanQuality(faces);
+                    if (!getImageInfoResponse.getFaces().isEmpty()) {
+                        List<Face> faces = localFaceListAnalyze(getImageInfoResponse.getFaces());
+                        setLoadingLayoutVisibility(true);
+                        updateStatisticAnalyzes(Constants.SUCCESSFULLY_ANALYSES);
+                        showHumanQuality(faces);
+                    } else {
+                        updateStatisticAnalyzes(Constants.FAILED_ANALYSES);
+                        showMessage(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
+                        setLoadingLayoutVisibility(true);
+                    }
                 } else {
                     UploadImageResponse uploadImageResponse = new Gson().
                             fromJson(jsonObject, new TypeToken<UploadImageResponse>() {
@@ -302,7 +321,7 @@ public class AnalyzeActivity extends AppCompatActivity
                 }
                 break;
             case REQUEST_IS_IN_THE_QUEUE:
-                showMessage(REQUEST_IS_IN_THE_QUEUE);
+                // showMessage(REQUEST_IS_IN_THE_QUEUE);
                 getFaceInfo(jsonObject.get(Constants.UID).getAsString());
                 break;
             default:
@@ -317,12 +336,14 @@ public class AnalyzeActivity extends AppCompatActivity
             handleResponse(jsonObject);
         } else {
             message.setText(language.get(Constants.NO_FACE_WERE_FOUND).getAsString());
+            updateStatisticAnalyzes(Constants.FAILED_ANALYSES);
             setProgressFormVisibility(false);
         }
     }
 
     @Override
     public void failedExecute(String errorMessage) {
+        updateStatisticAnalyzes(Constants.FAILED_ANALYSES);
         message.setText(language.get(Constants.NO_CONNECTION).getAsString());
         setProgressFormVisibility(false);
     }

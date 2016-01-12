@@ -10,6 +10,8 @@ public class Constants {
 
     public static final String RUSSIAN_LANGUAGE = "русский";
 
+    public static final String APP_TITLE = "Face Analyzer";
+
     public static final String SECRET = "171e8465-f548-401d-b63b-caf0dc28df5f";
 
     public static final String API_KEY = "api_key";

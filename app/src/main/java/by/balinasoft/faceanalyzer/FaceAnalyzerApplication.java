@@ -1,6 +1,9 @@
 package by.balinasoft.faceanalyzer;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.google.gson.JsonObject;
 
@@ -11,6 +14,8 @@ import by.balinasoft.faceanalyzer.utils.FileReader;
 
 public class FaceAnalyzerApplication extends Application {
 
+    private SharedPreferences sharedPreferences;
+
     private static final String WORDS_TRANSLATION_FILE = "words-translation.json";
     private static final String ENGLISH = "EN";
     private static final String RUSSIAN = "RU";
@@ -19,11 +24,14 @@ public class FaceAnalyzerApplication extends Application {
 
     private static JsonObject appLanguage;
     private static JsonObject mappingTable;
+    private int defaultValue = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         setApplicationLanguage();
+        sharedPreferences = PreferenceManager.
+                getDefaultSharedPreferences(FaceAnalyzerApplication.this);
     }
 
     private void setApplicationLanguage() {
@@ -58,5 +66,15 @@ public class FaceAnalyzerApplication extends Application {
 
     public String getEula() {
         return eula;
+    }
+
+    public void saveStatisticValue(String key, int value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
+    public int getStatisticValue(String key) {
+        return sharedPreferences.getInt(key, defaultValue);
     }
 }
