@@ -15,6 +15,17 @@
         android:icon="@drawable/icon"
         android:label="@string/logotype"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/logotype"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
         <activity
             android:name="com.vk.sdk.VKServiceActivity"
             android:label="ServiceActivity"
@@ -48,6 +59,11 @@
             android:name=".AnalyzeResultActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1494360687539205"
+            android:exported="true"/>
     </application>
 
 </manifest>

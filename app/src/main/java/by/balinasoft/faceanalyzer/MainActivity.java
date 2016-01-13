@@ -3,18 +3,25 @@ package by.balinasoft.faceanalyzer;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.gson.JsonObject;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
@@ -24,6 +31,9 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import by.balinasoft.faceanalyzer.constants.Constants;
 
@@ -95,16 +105,32 @@ public class MainActivity extends AppCompatActivity {
         facebookShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                shareFacebook();
             }
         });
 
-        ImageView odnoklassnikiShare = (ImageView) findViewById(R.id.odnoklassniki);
-        odnoklassnikiShare.setOnClickListener(new View.OnClickListener() {
+        ImageView odnaklassikiniShare = (ImageView) findViewById(R.id.odnaklassikini);
+        odnaklassikiniShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
         });
 
+    }
+
+    private void shareFacebook() {
+        ShareDialog shareDialog = new ShareDialog(MainActivity.this);
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle("FaceAnalyzer")
+                    .setContentDescription("Приложение для определения характера человека," +
+                            " по фотографии лица.")
+                    .setContentUrl(Uri.parse("https://play.google.com/store/apps/" +
+                            "details?id=com.betaface.betaface&hl=ru"))
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
     }
 
     private void makeVkRequest(String method, VKParameters params) {
@@ -128,8 +154,10 @@ public class MainActivity extends AppCompatActivity {
     private VKParameters getVkRequestParameters(VKAccessToken res) {
         VKParameters params = new VKParameters();
         params.put(VKApiConst.OWNER_ID, res.userId);
-        params.put(VKApiConst.MESSAGE, "Приложение для определения характера человека, по фотографии лица.");
-        params.put(VKApiConst.ATTACHMENTS, "https://play.google.com/store/apps/details?id=com.betaface.betaface&hl=ru");
+        params.put(VKApiConst.MESSAGE, "Приложение для определения характера человека, " +
+                "по фотографии лица.");
+        params.put(VKApiConst.ATTACHMENTS, "https://play.google.com/store/apps/details" +
+                "?id=com.betaface.betaface&hl=ru");
         return params;
     }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.facebook.FacebookSdk;
 import com.google.gson.JsonObject;
 import com.vk.sdk.VKSdk;
 
@@ -31,6 +32,7 @@ public class FaceAnalyzerApplication extends Application {
     public void onCreate() {
         super.onCreate();
         VKSdk.initialize(FaceAnalyzerApplication.this);
+        FacebookSdk.sdkInitialize(FaceAnalyzerApplication.this);
         setApplicationLanguage();
         sharedPreferences = PreferenceManager.
                 getDefaultSharedPreferences(FaceAnalyzerApplication.this);

@@ -3,4 +3,5 @@
     <string name="logotype">Face Analyze</string>
     <string name="loading_layout_color">#b4a4a4</string>
     <integer name="com_vk_sdk_AppId">5225208</integer>
+    <string name="facebook_app_id">1494360687539205</string>
 </resources>
