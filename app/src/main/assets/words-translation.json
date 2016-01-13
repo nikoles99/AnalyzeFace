@@ -24,7 +24,8 @@
     "Character": "Характер",
     "Result": "Результат",
     "Wait": "ПОДОЖДИТЕ",
-    "PhotoLoading": "Фото загружается..."
+    "PhotoLoading": "Фото загружается...",
+    "ShareInfoMessage": "Вы поделились приложением"
   },
   "EN": {
     "Stats": "Stats",
@@ -51,7 +52,8 @@
     "Character": "Character",
     "Result": "Result",
     "Wait": "WAIT",
-    "PhotoLoading": "Photo is loading..."
+    "PhotoLoading": "Photo is loading...",
+    "ShareInfoMessage": "You shared application"
   }
 }
 

@@ -52,6 +52,7 @@ public class Constants {
 
     public static final String EN = "EN";
     public static final String RU = "RU";
+    public static final String SHARE_INFO_MESSAGE = "ShareInfoMessage";
     public static final String STATS = "Stats";
     public static final String CHOOSE_FROM_GALLERY = "ChooseFromGallery";
     public static final String SHARE = "Share";

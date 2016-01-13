@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.JsonObject;
+import com.vk.sdk.VKSdk;
 
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ public class FaceAnalyzerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        VKSdk.initialize(FaceAnalyzerApplication.this);
         setApplicationLanguage();
         sharedPreferences = PreferenceManager.
                 getDefaultSharedPreferences(FaceAnalyzerApplication.this);

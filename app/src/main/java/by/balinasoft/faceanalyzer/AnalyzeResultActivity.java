@@ -17,7 +17,9 @@ import android.support.v7.widget.Toolbar;
 import com.google.gson.JsonObject;
 
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import by.balinasoft.faceanalyzer.adapters.FaceAdapter;
 import by.balinasoft.faceanalyzer.constants.Constants;
@@ -54,6 +56,9 @@ public class AnalyzeResultActivity extends AppCompatActivity implements FaceAnal
 
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
         List<Face> faceList = (List<Face>) getIntent().getSerializableExtra(FACE_LIST);
+        Set<Face> foo = new HashSet<Face>(faceList);
+        faceList.clear();
+        faceList.addAll(foo);
         createFacesListView(faceList);
 
         ImageView imageView = (ImageView) findViewById(R.id.photo);
