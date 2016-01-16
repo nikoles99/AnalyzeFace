@@ -16,13 +16,13 @@ import by.balinasoft.faceanalyzer.constants.Constants;
 
 public class PhotoFormatUtility {
 
-    private static final int VALUE = 100;
+    private static final int QUALITY_VALUE = 100;
 
     private static final String IMAGE_FILE_NAME = "Face.jpg";
 
     public static String bitmapToString(Bitmap image) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, VALUE, stream);
+        image.compress(Bitmap.CompressFormat.JPEG, QUALITY_VALUE, stream);
         byte[] b = stream.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
@@ -33,7 +33,7 @@ public class PhotoFormatUtility {
             File directory = contextWrapper.getDir(Constants.APP_TITLE, Context.MODE_PRIVATE);
             File image = new File(directory, IMAGE_FILE_NAME);
             FileOutputStream outputStream = new FileOutputStream(image);
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, VALUE, outputStream);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, QUALITY_VALUE, outputStream);
             outputStream.close();
             return directory.getAbsolutePath();
         } catch (Exception e) {

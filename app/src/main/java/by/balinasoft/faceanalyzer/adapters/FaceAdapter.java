@@ -35,7 +35,7 @@ public class FaceAdapter extends BaseExpandableListAdapter {
         language = ((FaceAnalyzerApplication) context.getApplicationContext()).getAppLanguage();
         qualities = new ArrayList<String>() {{
             add(Constants.CHARACTER);
-            add(Constants.RALATIONSHIP);
+            add(Constants.RELATIONSHIP);
         }};
     }
 

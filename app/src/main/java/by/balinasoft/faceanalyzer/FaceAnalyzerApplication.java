@@ -1,7 +1,6 @@
 package by.balinasoft.faceanalyzer;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -13,7 +12,6 @@ import java.util.Locale;
 
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.utils.FileReader;
-import ru.ok.android.sdk.Odnoklassniki;
 
 public class FaceAnalyzerApplication extends Application {
 
@@ -27,7 +25,6 @@ public class FaceAnalyzerApplication extends Application {
 
     private static JsonObject appLanguage;
     private static JsonObject mappingTable;
-    private int defaultValue = 0;
 
     @Override
     public void onCreate() {
@@ -69,17 +66,18 @@ public class FaceAnalyzerApplication extends Application {
         return mappingTable;
     }
 
-    public String getEula() {
+    public String getEulaFile() {
         return eula;
     }
 
     public void saveStatisticValue(String key, int value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public int getStatisticValue(String key) {
+        int defaultValue = 0;
         return sharedPreferences.getInt(key, defaultValue);
     }
 }

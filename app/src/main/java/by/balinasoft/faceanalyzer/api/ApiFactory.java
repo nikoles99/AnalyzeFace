@@ -13,12 +13,16 @@ import retrofit.Retrofit;
 
 public class ApiFactory {
 
+    private static final int CONNECT_TIMEOUT = 60000;
+    private static final int WRITE_TIMEOUT = 60000;
+    private static final int TIMEOUT = 60000;
+
     private static final OkHttpClient CLIENT = new OkHttpClient();
 
     static {
-        CLIENT.setConnectTimeout(Constants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
-        CLIENT.setWriteTimeout(Constants.WRITE_TIMEOUT, TimeUnit.SECONDS);
-        CLIENT.setReadTimeout(Constants.TIMEOUT, TimeUnit.SECONDS);
+        CLIENT.setConnectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS);
+        CLIENT.setWriteTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
+        CLIENT.setReadTimeout(TIMEOUT, TimeUnit.SECONDS);
     }
 
     @NonNull

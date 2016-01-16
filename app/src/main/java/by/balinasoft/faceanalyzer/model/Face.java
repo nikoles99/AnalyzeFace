@@ -29,7 +29,7 @@ public class Face implements Serializable {
         switch (quality) {
             case Constants.CHARACTER:
                 return getFaceProperties(quality, qualitiesCharacter);
-            case Constants.RALATIONSHIP:
+            case Constants.RELATIONSHIP:
                 return getFaceProperties(quality, qualitiesRelationship);
             default:
                 return null;

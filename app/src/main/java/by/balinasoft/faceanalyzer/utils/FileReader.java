@@ -15,11 +15,11 @@ public class FileReader {
 
     public static String loadFile(Context context, String fileName) {
         try {
-            InputStream is = context.getAssets().open(fileName);
-            int size = is.available();
+            InputStream inputStream = context.getAssets().open(fileName);
+            int size = inputStream.available();
             byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
+            inputStream.read(buffer);
+            inputStream.close();
             return new String(buffer, ENCODING);
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Invalid String format %s", fileName), e);

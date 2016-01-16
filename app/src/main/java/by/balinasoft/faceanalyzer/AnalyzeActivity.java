@@ -267,7 +267,7 @@ public class AnalyzeActivity extends AppCompatActivity
         if (nameProperty != null) {
             JsonObject valueProperty = nameProperty.getAsJsonObject(serverFaceProperty.getValue());
             createProperty(Constants.CHARACTER, localFace, serverFaceProperty, valueProperty);
-            createProperty(Constants.RALATIONSHIP, localFace, serverFaceProperty, valueProperty);
+            createProperty(Constants.RELATIONSHIP, localFace, serverFaceProperty, valueProperty);
         }
     }
 
