@@ -3,23 +3,14 @@ package by.balinasoft.faceanalyzer;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.gson.JsonObject;
@@ -31,9 +22,6 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import by.balinasoft.faceanalyzer.constants.Constants;
 
@@ -108,14 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 shareFacebook();
             }
         });
-
-        ImageView odnaklassikiniShare = (ImageView) findViewById(R.id.odnaklassikini);
-        odnaklassikiniShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-
     }
 
     private void shareFacebook() {

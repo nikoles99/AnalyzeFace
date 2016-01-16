@@ -12,6 +12,7 @@
     <application
         android:name=".FaceAnalyzerApplication"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@drawable/icon"
         android:label="@string/logotype"
         android:theme="@style/AppTheme">
@@ -19,6 +20,21 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
 
+        <activity
+            android:name="ru.ok.android.sdk.OkAuthActivity"
+            android:configChanges="orientation"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="ok1241539328"
+                    android:scheme="okauth"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges=
@@ -50,8 +66,6 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".MoreInfoActivity">
-        </activity>
         <activity
             android:name=".StatisticActivity"
             android:screenOrientation="portrait"/>

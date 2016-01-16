@@ -85,7 +85,6 @@
                     android:gravity="center"/>
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +106,6 @@
                     android:layout_gravity="center"
                     android:layout_marginRight="10dp"/>
             </LinearLayout>
-
 
         </RelativeLayout>
 
@@ -143,39 +141,31 @@
             android:background="#c4c2c2"/>
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/share"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/shareTitle"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
-        android:layout_marginTop="20dp">
-
-        <ImageView
-            android:id="@+id/odnaklassikini"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="left"
-            android:background="@drawable/odnoklassniki"/>
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/facebook"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
+            android:layout_margin="20dp"
             android:background="@drawable/facebook"/>
 
         <ImageView
             android:id="@+id/vkontakte"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="right"
+            android:layout_margin="20dp"
             android:background="@drawable/vk"/>
-    </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

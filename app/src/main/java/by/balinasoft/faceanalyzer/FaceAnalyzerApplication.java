@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import by.balinasoft.faceanalyzer.constants.Constants;
 import by.balinasoft.faceanalyzer.utils.FileReader;
+import ru.ok.android.sdk.Odnoklassniki;
 
 public class FaceAnalyzerApplication extends Application {
 

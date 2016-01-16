@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:textColor="@color/abc_primary_text_disable_only_material_dark"
-        android:textSize="18dp"/>
+        android:textSize="@dimen/fragment_get_photo_text_size"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,5 +24,5 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:textColor="@color/abc_primary_text_disable_only_material_dark"
-        android:textSize="18dp"/>
+        android:textSize="@dimen/fragment_get_photo_text_size"/>
 </LinearLayout>
