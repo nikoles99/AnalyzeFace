@@ -28,8 +28,16 @@ import by.balinasoft.faceanalyzer.constants.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String METHOD = "wall.post";
-    public static final String PARAM_ADD_ON_WALL = "wall";
+    private static final String VK_METHOD = "wall.post";
+    private static final String PARAM_ADD_ON_WALL = "wall";
+    private static final String NO = "No";
+    private static final String LATER = "Later";
+    private static final String YES = "Yes";
+    private static final String MARKET_URI = "market://details?id=ru.lxx.soltroll";
+    private static final String APP_DESCRIPTION = "Приложение для определения характера человека," +
+            " по фотографии лица.";
+    private static final String APP_URL = "https://play.google.com/store/apps/" +
+            "details?id=com.betaface.betaface&hl=ru";
 
     private boolean isEvaluate = false;
 
@@ -81,16 +89,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageView vkShare = (ImageView) findViewById(R.id.vkontakte);
-        vkShare.setOnClickListener(new View.OnClickListener() {
+        ImageView shareVk = (ImageView) findViewById(R.id.vkontakte);
+        shareVk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VKSdk.login(MainActivity.this, PARAM_ADD_ON_WALL);
+                shareVk();
             }
         });
 
-        ImageView facebookShare = (ImageView) findViewById(R.id.facebook);
-        facebookShare.setOnClickListener(new View.OnClickListener() {
+        ImageView shareFacebook = (ImageView) findViewById(R.id.facebook);
+        shareFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 shareFacebook();
@@ -98,19 +106,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void shareVk() {
+        VKSdk.login(MainActivity.this, PARAM_ADD_ON_WALL);
+    }
+
     private void shareFacebook() {
         ShareDialog shareDialog = new ShareDialog(MainActivity.this);
+
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setContentTitle("FaceAnalyzer")
-                    .setContentDescription("Приложение для определения характера человека," +
-                            " по фотографии лица.")
-                    .setContentUrl(Uri.parse("https://play.google.com/store/apps/" +
-                            "details?id=com.betaface.betaface&hl=ru"))
+                    .setContentTitle(Constants.APP_TITLE)
+                    .setContentDescription(APP_DESCRIPTION)
+                    .setContentUrl(Uri.parse(APP_URL))
                     .build();
 
             shareDialog.show(linkContent);
         }
+    }
+
+    private VKParameters getVkRequestParameters(VKAccessToken res) {
+        VKParameters params = new VKParameters();
+        params.put(VKApiConst.OWNER_ID, res.userId);
+        params.put(VKApiConst.MESSAGE, APP_DESCRIPTION);
+        params.put(VKApiConst.ATTACHMENTS, APP_URL);
+        return params;
     }
 
     private void makeVkRequest(String method, VKParameters params) {
@@ -126,33 +145,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(VKError error) {
                 super.onError(error);
-                showMessage(error.errorCode + ": " + error.errorMessage);
+                showMessage(error.errorMessage);
             }
         });
-    }
-
-    private VKParameters getVkRequestParameters(VKAccessToken res) {
-        VKParameters params = new VKParameters();
-        params.put(VKApiConst.OWNER_ID, res.userId);
-        params.put(VKApiConst.MESSAGE, "Приложение для определения характера человека, " +
-                "по фотографии лица.");
-        params.put(VKApiConst.ATTACHMENTS, "https://play.google.com/store/apps/details" +
-                "?id=com.betaface.betaface&hl=ru");
-        return params;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+
             @Override
             public void onResult(VKAccessToken res) {
                 VKParameters params = getVkRequestParameters(res);
-                makeVkRequest(METHOD, params);
+                makeVkRequest(VK_METHOD, params);
             }
 
             @Override
             public void onError(VKError error) {
-                showMessage(error.errorCode + ": " + error.errorMessage);
+                showMessage(error.errorMessage);
             }
         })) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -168,34 +178,37 @@ public class MainActivity extends AppCompatActivity {
         if (isEvaluate) {
             super.onBackPressed();
         } else {
-            evaluateApplication();
+            showEvaluateDialog();
         }
     }
 
-    private void evaluateApplication() {
+    private void showEvaluateDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage("Please Evaluate Application");
-        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        dialog.setMessage(language.get(Constants.EVALUATE_APP).getAsString());
+        dialog.setPositiveButton(YES, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("market://details?id=ru.lxx.soltroll"));
-                startActivity(intent);
-                isEvaluate = true;
-
+                evaluateApplication();
             }
         });
-        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(NO, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 isEvaluate = true;
             }
         });
-        dialog.setNeutralButton("Later", new DialogInterface.OnClickListener() {
+        dialog.setNeutralButton(LATER, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             }
         });
         dialog.show();
+    }
+
+    private void evaluateApplication() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(MARKET_URI));
+        startActivity(intent);
+        isEvaluate = true;
     }
 }

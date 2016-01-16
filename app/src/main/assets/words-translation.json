@@ -25,7 +25,8 @@
     "Result": "Результат",
     "Wait": "ПОДОЖДИТЕ",
     "PhotoLoading": "Фото загружается...",
-    "ShareInfoMessage": "Вы поделились приложением"
+    "ShareInfoMessage": "Вы поделились приложением",
+    "EvaluateApp": "Пожалуйста оцените приложение"
   },
   "EN": {
     "Stats": "Stats",
@@ -53,7 +54,8 @@
     "Result": "Result",
     "Wait": "WAIT",
     "PhotoLoading": "Photo is loading...",
-    "ShareInfoMessage": "You shared application"
+    "ShareInfoMessage": "You shared application",
+    "EvaluateApp": "Please evaluate application"
   }
 }
 

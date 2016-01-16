@@ -66,6 +66,7 @@ public class Constants {
     public static final String EULA = "EULA";
     public static final String FAILED_ANALYSES = "Failed";
     public static final String UPLOADING = "Uploading";
+    public static final String EVALUATE_APP = "EvaluateApp";
     public static final String ANALYSING = "Analysing";
     public static final String NO_CONNECTION = "NoConnection";
     public static final String NO_FACE_WERE_FOUND = "NoFacesWereFound";
