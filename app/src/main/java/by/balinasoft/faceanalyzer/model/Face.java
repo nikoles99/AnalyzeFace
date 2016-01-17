@@ -38,12 +38,16 @@ public class Face implements Serializable {
 
     private List<FaceProperties> getFaceProperties(String quality, List<FaceProperties> list) {
         if (list.isEmpty()) {
-            for (FaceProperties property : faceProperties) {
-                if (property.getName().equals(quality)) {
-                    list.add(property);
-                }
-            }
+            sortFaceProperties(quality, list);
         }
         return list;
+    }
+
+    private void sortFaceProperties(String quality, List<FaceProperties> list) {
+        for (FaceProperties property : faceProperties) {
+            if (property.getName().equals(quality)) {
+                list.add(property);
+            }
+        }
     }
 }

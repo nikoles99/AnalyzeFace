@@ -21,7 +21,7 @@ public class FaceAnalyzerApplication extends Application {
     private static final String ENGLISH = "EN";
     private static final String RUSSIAN = "RU";
 
-    private static String eula;
+    private static String eulaFile;
 
     private static JsonObject appLanguage;
     private static JsonObject mappingTable;
@@ -45,12 +45,12 @@ public class FaceAnalyzerApplication extends Application {
         switch (deviceLanguage) {
             case Constants.RUSSIAN_LANGUAGE:
                 appLanguage = jsonObject.getAsJsonObject(RUSSIAN);
-                eula = Constants.RUSSIAN_TERMS_OF_USE;
+                eulaFile = Constants.RUSSIAN_TERMS_OF_USE;
                 mappingTableFile = Constants.RUSSIAN_MAPPING_TABLE;
                 break;
             default:
                 appLanguage = jsonObject.getAsJsonObject(ENGLISH);
-                eula = Constants.ENGLISH_TERMS_OF_USE;
+                eulaFile = Constants.ENGLISH_TERMS_OF_USE;
                 mappingTableFile = Constants.ENGLISH_MAPPING_TABLE;
                 break;
         }
@@ -67,7 +67,7 @@ public class FaceAnalyzerApplication extends Application {
     }
 
     public String getEulaFile() {
-        return eula;
+        return eulaFile;
     }
 
     public void saveStatisticValue(String key, int value) {
