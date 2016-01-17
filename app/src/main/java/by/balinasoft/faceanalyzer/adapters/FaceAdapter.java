@@ -1,8 +1,5 @@
 package by.balinasoft.faceanalyzer.adapters;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -12,6 +9,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import by.balinasoft.faceanalyzer.FaceAnalyzerApplication;
 import by.balinasoft.faceanalyzer.R;
@@ -56,7 +56,10 @@ public class FaceAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int i) {
-        return qualities.get(i);
+        String categorySymbol = qualities.get(i);
+        String categoryName = categorySymbol.equals(Constants.CHARACTER) ?
+                Constants.SOCIAL_CHARACTER : Constants.SOCIAL_RELATIONS;
+        return language.get(categoryName).getAsString();
     }
 
     @Override
@@ -84,12 +87,13 @@ public class FaceAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int position, boolean b, View convertView, ViewGroup parent) {
         View view = convertView;
-        String uid = (String) getGroup(position);
+
         if (view == null) {
             view = getLayoutInflater().inflate(R.layout.item_group_quality_adapter, parent, false);
         }
         TextView textView = (TextView) view.findViewById(R.id.groupQuality);
         textView.setTypeface(null, Typeface.BOLD);
+        String uid = (String) getGroup(position);
         textView.setText(uid);
         return view;
     }

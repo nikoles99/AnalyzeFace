@@ -69,6 +69,7 @@ public class Constants {
     public static final String UPLOAD_FAILED = "UploadFailed";
     public static final String CHARACTER = "X";
     public static final String SOCIAL_RELATIONS = "SocialRelations";
+    public static final String SOCIAL_CHARACTER = "Character";
     public static final String WAIT = "Wait";
     public static final String PHOTO_LOADING = "PhotoLoading";
     public static final String RESPONSE = "string_response";
